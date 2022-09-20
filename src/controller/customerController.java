@@ -3,34 +3,47 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class customerController {
+public class customerController implements Initializable {
 
     @FXML private Button addCustomer;
     @FXML private Button appointmentButton;
-    @FXML private TableColumn<?, ?> customerAddressCol;
-    @FXML private TableColumn<?, ?> customerCountryCol;
-    @FXML private TableColumn<?, ?> customerIDCol;
-    @FXML private TableColumn<?, ?> customerNameCol;
-    @FXML private TableColumn<?, ?> customerPhoneCol;
-    @FXML private TableColumn<?, ?> customerPostalCol;
-    @FXML private TableColumn<?, ?> customerStateCol;
+    @FXML private TableView<Customer> customerTableView;
+    @FXML private TableColumn<Customer, String> customerAddressCol;
+    @FXML private TableColumn<Customer, String> customerCountryCol;
+    @FXML private TableColumn<Customer, Integer> customerIDCol;
+    @FXML private TableColumn<Customer, String> customerNameCol;
+    @FXML private TableColumn<Customer, Integer> customerPhoneCol;
+    @FXML private TableColumn<Customer, Integer> customerPostalCol;
+    @FXML private TableColumn<Customer, String> customerStateCol;
+
     @FXML private Button deleteCustomer;
     @FXML private Button reportButton;
     @FXML private Button updateCustomer;
 
-
+@Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        fillCustomerTable();
+        customerTableView.setItems(Customer.getAllCustomers());
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("ID"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        customerPostalCol.setCellValueFactory(new PropertyValueFactory<>("zip"));
+
+
 
     }
 
@@ -75,9 +88,7 @@ public class customerController {
         stage.show();
 
     }
-    private static void fillCustomerTable(){
-        String sql = ""
-    }
+
 
 
 }

@@ -1,11 +1,14 @@
 package Main;
 
 import dao.DBconnection;
+import dao.DBcustomer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -18,8 +21,9 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         DBconnection.openConnection();
+        DBcustomer.addCustomerObjects();
         launch(args);
         DBconnection.closeConnection();
 
