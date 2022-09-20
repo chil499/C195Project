@@ -1,9 +1,9 @@
-package helper;
+package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public abstract class JDBC {
+public abstract class DBconnection {
 
 
     private static final String protocol = "jdbc";
