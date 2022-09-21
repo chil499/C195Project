@@ -35,7 +35,7 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextField fx:id="customerIDTextField" GridPane.columnIndex="1" />
+                  <TextField fx:id="customerIDTextField" editable="false" promptText="Auto-Gen Disabled" GridPane.columnIndex="1" />
                   <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <TextField fx:id="addressTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <TextField fx:id="postalTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />

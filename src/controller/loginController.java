@@ -15,6 +15,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 
 
@@ -38,6 +42,7 @@ public class loginController implements Initializable {
         String username = usernameTextArea.getText();
         String password = passwordTextArea.getText();
         if(DBuser.checkLogin(username,password)==true){
+
             stage = (Stage)((Button) event.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
             stage.setScene(new Scene(scene));
@@ -50,6 +55,12 @@ public class loginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ZoneId localZoneId = ZoneId.systemDefault();
+        LocalTime localTime = LocalTime.now();
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        zoneID.setText(String.valueOf(localTime.withNano(0)));
 
     }
 }

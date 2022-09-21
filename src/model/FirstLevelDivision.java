@@ -9,11 +9,12 @@ public class FirstLevelDivision{
     private String name;
     private static ObservableList<FirstLevelDivision> allStates = FXCollections.observableArrayList();
 
-    public FirstLevelDivision(int id, String name, int countryID){
+    public FirstLevelDivision(int divisionID, String name, int countryID){
         this.divisionID = divisionID;
         this.name = name;
         this.countryID = countryID;
     }
+
     public static ObservableList<FirstLevelDivision> getAllStates(){return allStates;}
     public static void addStates(FirstLevelDivision state){allStates.add(state);}
 
