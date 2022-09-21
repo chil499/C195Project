@@ -43,14 +43,10 @@ public class customerController implements Initializable {
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         customerPostalCol.setCellValueFactory(new PropertyValueFactory<>("zip"));
 
-
-
     }
 
     Stage stage;
     Parent scene;
-
-
 
     @FXML
     void onActionAddCustomer(ActionEvent event) throws IOException {

@@ -44,7 +44,6 @@ public class loginController implements Initializable {
             stage.show();
 
         }
-
     }
 
 

@@ -20,7 +20,6 @@ public class DBcustomer {
             String phone = rs.getString("Phone");
             int divisionID = rs.getInt("Division_ID");
             Customer.addCustomer(new Customer(id,name, address,zip,phone,divisionID));
-
         }
 
     }

@@ -41,7 +41,7 @@ public class Customer {
 
     public void setPhone(){this.phone = phone;}
     public String getPhone(){return phone;}
-
+    
     public void setDivisionID(){this.divisionID = divisionID;}
     public int getDivisionID(){return divisionID;}
 
