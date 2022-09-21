@@ -32,9 +32,9 @@
                <columns>
                   <TableColumn fx:id="customerIDCol" prefWidth="155.0" text="Customer ID" />
                   <TableColumn fx:id="customerNameCol" prefWidth="129.0" text="Customer Name" />
-                  <TableColumn fx:id="customerAddressCol" prefWidth="193.0" text="Address" />
                   <TableColumn fx:id="customerPostalCol" minWidth="0.0" prefWidth="169.0" text="Postal Code" />
-                  <TableColumn fx:id="customerPhoneCol" prefWidth="319.0" text="Phone Number" />
+                  <TableColumn fx:id="customerPhoneCol" prefWidth="154.0" text="Phone Number" />
+                  <TableColumn fx:id="customerAddressCol" prefWidth="358.0" text="Address" />
                   <TableColumn fx:id="customerCountryCol" prefWidth="190.0" text="Country" />
                   <TableColumn fx:id="customerStateCol" prefWidth="181.0" text="State/Province" />
                </columns>

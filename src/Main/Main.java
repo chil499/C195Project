@@ -1,7 +1,9 @@
 package Main;
 
+import dao.DBcountry;
 import dao.DBconnection;
 import dao.DBcustomer;
+import dao.DBfirstLevelDivision;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,6 +26,8 @@ public class Main extends Application {
     public static void main(String[] args) throws SQLException {
         DBconnection.openConnection();
         DBcustomer.addCustomerObjects();
+        DBcountry.addCountryObjects();
+        DBfirstLevelDivision.addfirstLevelDivsionObjects();
         launch(args);
         DBconnection.closeConnection();
 

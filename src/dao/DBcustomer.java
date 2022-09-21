@@ -19,8 +19,13 @@ public class DBcustomer {
             String zip = rs.getString("Postal_Code");
             String phone = rs.getString("Phone");
             int divisionID = rs.getInt("Division_ID");
-            Customer.addCustomer(new Customer(id,name, address,zip,phone,divisionID));
+            String state = DBfirstLevelDivision.returnState(divisionID);
+            String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
+            Customer.addCustomer(new Customer(id,name, address,zip,phone,divisionID,state,country));
         }
 
     }
+
+
+
 }

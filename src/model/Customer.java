@@ -12,16 +12,20 @@ public class Customer {
     private String zip;
     private String phone;
     private int divisionID;
+    private String country;
+    private String state;
 
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
-    public Customer(int id, String name, String address, String zip, String phone, int divisionID) {
+    public Customer(int id, String name, String address, String zip, String phone, int divisionID,String country, String state) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.zip = zip;
         this.phone = phone;
         this.divisionID = divisionID;
+        this.country= country;
+        this.state = state;
     }
 
     public static ObservableList<Customer> getAllCustomers(){return allCustomers;}
@@ -44,6 +48,12 @@ public class Customer {
     
     public void setDivisionID(){this.divisionID = divisionID;}
     public int getDivisionID(){return divisionID;}
+
+    public void setState(){this.state = state;}
+    public String getState(){return state;}
+
+    public void setCountry(){this.country = country;}
+    public String getCountry(){return country;}
 
 
 }
