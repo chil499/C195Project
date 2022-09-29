@@ -22,7 +22,7 @@ public class DBcustomer {
             int divisionID = rs.getInt("Division_ID");
             String state = DBfirstLevelDivision.returnState(divisionID);
             String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
-            Customer.addCustomer(new Customer(id,name, address,zip,phone,divisionID,state,country));
+            Customer.addCustomer(new Customer(id,name, address,zip,phone,divisionID,country,state));
         }
 
 
@@ -44,7 +44,23 @@ public class DBcustomer {
          System.out.print("Insert successful");
 
     }
+    public static void update(String name, String address, String zip, String phone, String createDate, String createdBy, String lastUpdateDate, String lastUpdatedBy, int divisionID,int id) throws SQLException {
+        String sql = "UPDATE customers SET Customer_Name = ?,Address = ?, Postal_Code = ?,Phone = ?, Create_Date =?,Created_By = ?,Last_Update = ?,Last_Updated_By = ?,Division_ID = ? WHERE Customer_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setString(1, name);
+        ps.setString(2, address);
+        ps.setString(3, zip);
+        ps.setString(4, phone);
+        ps.setString(5, createDate);
+        ps.setString(6, createdBy);
+        ps.setString(7, lastUpdateDate);
+        ps.setString(8, lastUpdatedBy);
+        ps.setInt(9, divisionID);
+        ps.setInt(10, id);
+        ps.executeUpdate();
+        System.out.print("Update successful");
 
 
+    }
 
-}
+    }

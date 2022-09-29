@@ -3,8 +3,6 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Date;
-
 public class Customer {
     private int id;
     private String name;
@@ -14,7 +12,6 @@ public class Customer {
     private int divisionID;
     private String country;
     private String state;
-
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
     public Customer(int id, String name, String address, String zip, String phone, int divisionID,String country, String state) {
@@ -55,5 +52,10 @@ public class Customer {
     public void setCountry(){this.country = country;}
     public String getCountry(){return country;}
 
+    public static void updateCustomer(int index,Customer newCustomer){allCustomers.set(index,newCustomer);}
 
+    @Override
+    public String toString(){
+        return(country);
+    }
 }

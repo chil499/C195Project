@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import model.Country;
 import model.Customer;
 import model.FirstLevelDivision;
+import model.User;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,6 +98,7 @@ public class addCustomerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         countryComboBox.setItems(Country.getAllCountries());
 
     }

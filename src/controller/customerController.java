@@ -82,8 +82,18 @@ public class customerController implements Initializable {
 
     @FXML
     void onActionUpdateCustomer(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/updateCustomer.fxml"));
+        loader.load();
+
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/updateCustomer.fxml"));
+
+
+        Customer selected = customerTableView.getSelectionModel().getSelectedItem();
+        updateCustomerController controller = loader.getController();
+        controller.setCustomer(customerTableView.getSelectionModel().getSelectedItem());
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        Parent scene = loader.getRoot();
         stage.setScene(new Scene(scene));
         stage.show();
 
