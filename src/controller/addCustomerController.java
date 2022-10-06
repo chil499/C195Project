@@ -24,6 +24,8 @@ import model.User;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,16 +58,16 @@ public class addCustomerController implements Initializable {
 
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
         int ID = getNewID();
         String name = nameTextField.getText();
         String address = addressTextField.getText();
         String zip = postalTextField.getText();
         String phone = phoneTextField.getText();
-        String createDate = ZonedDateTime.now(ZoneOffset.UTC).format(formatter).toString();
+        Timestamp createDate = new Timestamp(System.currentTimeMillis());
         String createBy = "admin";
-        String lastCreateDate = ZonedDateTime.now(ZoneOffset.UTC).format(formatter).toString();
+        Timestamp lastCreateDate = new Timestamp(System.currentTimeMillis());
         String lastCreateBy = "admin";
         int divisionID = stateSelected.getDivisionID();
         String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));

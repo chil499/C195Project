@@ -1,9 +1,6 @@
 package Main;
 
-import dao.DBcountry;
-import dao.DBconnection;
-import dao.DBcustomer;
-import dao.DBfirstLevelDivision;
+import dao.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,19 +9,13 @@ import javafx.stage.Stage;
 import model.Country;
 import model.User;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+
 
 public class Main extends Application {
 
-
+    public int currentUser;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -39,6 +30,8 @@ public class Main extends Application {
         DBcountry.addCountryObjects();
         DBfirstLevelDivision.addfirstLevelDivsionObjects();
         DBcustomer.addCustomerObjects();
+        DBcontact.addContactObjects();
+
         launch(args);
         DBconnection.closeConnection();
 

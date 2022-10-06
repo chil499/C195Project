@@ -21,10 +21,6 @@ public class DBcountry {
 
     }
 
-
-
-
-
     public static int returnCountryID(int divisionID) throws SQLException {
         String sql = "SELECT Country_ID FROM first_level_divisions WHERE Division_ID = '" + divisionID + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -32,8 +28,8 @@ public class DBcountry {
         rs.next();
         int countryID = rs.getInt("Country_ID");
         return countryID;
-
     }
+
     public static String returnCountry(int countryID) throws SQLException {
         String sql = "SELECT Country FROM countries WHERE Country_ID = '" + countryID + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);

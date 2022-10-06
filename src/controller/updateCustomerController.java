@@ -3,6 +3,7 @@ package controller;
 import dao.DBcountry;
 import dao.DBcustomer;
 import dao.DBfirstLevelDivision;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import model.FirstLevelDivision;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +47,14 @@ public class updateCustomerController {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+    @FXML
+    void onActionCountrySelect(ActionEvent event){
+        Country selected =  countryComboBox.getSelectionModel().getSelectedItem();
+        int countryID = selected.getID();
+        ObservableList matchedStates = FirstLevelDivision.matchCountryId(countryID);
+        stateComboBox.setItems(matchedStates);
 
+    }
     public void setCustomer(Customer selectedCustomer){
 
         customerID = Customer.getAllCustomers().indexOf(selectedCustomer);
@@ -81,10 +90,10 @@ public class updateCustomerController {
         String address = addressTextField.getText();
         String zip = postalTextField.getText();
         String phone = phoneTextField.getText();
-        String createDate = ZonedDateTime.now(ZoneOffset.UTC).format(formatter).toString();
+        Timestamp createDate = new Timestamp(System.currentTimeMillis());
         String createBy = "admin";
-        String lastCreateDate = ZonedDateTime.now(ZoneOffset.UTC).format(formatter).toString();
-        String lastCreateBy = "admin";
+        Timestamp lastCreateDate = DBcustomer.selectTimestamp("Last_Update",ID);
+        String lastCreateBy = DBcustomer.select("Last_Updated_By",ID);
         int divisionID = stateSelected.getDivisionID();
         String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
         String state = DBfirstLevelDivision.returnState(divisionID);

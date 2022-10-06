@@ -27,7 +27,7 @@ public class DBcustomer {
 
 
     }
-    public static void insert(int id,String name, String address, String zip, String phone, String createDate, String createdBy, String lastUpdateDate, String lastUpdatedBy, int divisionID) throws SQLException{
+    public static void insert(int id,String name, String address, String zip, String phone, Timestamp createDate, String createdBy, Timestamp lastUpdateDate, String lastUpdatedBy, int divisionID) throws SQLException{
          String sql = "INSERT INTO customers VALUES(?,?,?,?,?,?,?,?,?,?)";
          PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
          ps.setInt(1,id);
@@ -35,25 +35,25 @@ public class DBcustomer {
          ps.setString(3,address);
          ps.setString(4,zip);
          ps.setString(5,phone);
-         ps.setString(6, createDate);
+         ps.setTimestamp(6, createDate);
          ps.setString(7,createdBy);
-         ps.setString(8, lastUpdateDate);
+         ps.setTimestamp(8, lastUpdateDate);
          ps.setString(9, lastUpdatedBy);
          ps.setInt(10,divisionID);
          ps.executeUpdate();
          System.out.print("Insert successful");
 
     }
-    public static void update(String name, String address, String zip, String phone, String createDate, String createdBy, String lastUpdateDate, String lastUpdatedBy, int divisionID,int id) throws SQLException {
+    public static void update(String name, String address, String zip, String phone, Timestamp createDate, String createdBy, Timestamp lastUpdateDate, String lastUpdatedBy, int divisionID,int id) throws SQLException {
         String sql = "UPDATE customers SET Customer_Name = ?,Address = ?, Postal_Code = ?,Phone = ?, Create_Date =?,Created_By = ?,Last_Update = ?,Last_Updated_By = ?,Division_ID = ? WHERE Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ps.setString(1, name);
         ps.setString(2, address);
         ps.setString(3, zip);
         ps.setString(4, phone);
-        ps.setString(5, createDate);
+        ps.setTimestamp(5, createDate);
         ps.setString(6, createdBy);
-        ps.setString(7, lastUpdateDate);
+        ps.setTimestamp(7, lastUpdateDate);
         ps.setString(8, lastUpdatedBy);
         ps.setInt(9, divisionID);
         ps.setInt(10, id);
@@ -61,6 +61,31 @@ public class DBcustomer {
         System.out.print("Update successful");
 
 
+    }
+    public static void delete(int ID) throws SQLException {
+        String sql = "DELETE FROM customers where Customer_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ps.executeUpdate();
+
+    }
+    public static String select( String columnName,int ID) throws SQLException {
+        String sql = "SELECT * FROM customers WHERE Customer_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        String result  = rs.getString(columnName);
+        return result;
+    }
+    public static Timestamp selectTimestamp( String columnName,int ID) throws SQLException {
+        String sql = "SELECT * FROM customers WHERE Customer_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        Timestamp result  = rs.getTimestamp(columnName);
+        return result;
     }
 
     }

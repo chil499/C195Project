@@ -1,5 +1,6 @@
 package controller;
 
+import dao.DBappointment;
 import dao.DBuser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,7 +33,7 @@ public class loginController implements Initializable {
     @FXML private TextField usernameTextArea;
     @FXML private Label zoneID;
 
-    User currentUser = new User(0,"default");
+
     Stage stage;
     Parent scene;
 
@@ -43,13 +44,13 @@ public class loginController implements Initializable {
         String username = usernameTextArea.getText();
         String password = passwordTextArea.getText();
         if(DBuser.checkLogin(username,password)==true){
-            currentUser.setName(username);
-            currentUser.setID(7);
+
+            System.out.println(DBuser.getLoggedOnUser().getID());
+            DBappointment.getAppointmentByMonth();
             stage = (Stage)((Button) event.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
             stage.setScene(new Scene(scene));
             stage.show();
-
         }
     }
 
@@ -63,7 +64,7 @@ public class loginController implements Initializable {
         LocalDateTime localDateTime = LocalDateTime.now();
 
 
-        zoneID.setText(String.valueOf(localTime.withNano(0)));
+        zoneID.setText(String.valueOf(localZoneId));
 
     }
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import dao.DBappointment;
 import dao.DBcustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Customer;
@@ -17,6 +16,7 @@ import model.Customer;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class customerController implements Initializable {
@@ -62,7 +62,8 @@ public class customerController implements Initializable {
     }
 
     @FXML
-    void onActionAppointment(ActionEvent event) throws IOException {
+    void onActionAppointment(ActionEvent event) throws IOException, SQLException {
+
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
         stage.setScene(new Scene(scene));
@@ -71,7 +72,17 @@ public class customerController implements Initializable {
     }
 
     @FXML
-    void onActionDeleteCustomer(ActionEvent event) {
+    void onActionDeleteCustomer(ActionEvent event) throws SQLException {
+        Customer selected = customerTableView.getSelectionModel().getSelectedItem();
+        if (selected == null) { return; }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"This will delete the customer from the database, do you wish to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+
+            customerTableView.getItems().remove(selected);
+            Customer.deleteCustomer(selected);
+            DBcustomer.delete(selected.getID());
+        }
 
     }
 
