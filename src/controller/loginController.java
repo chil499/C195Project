@@ -8,28 +8,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.User;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
+
 import java.util.ResourceBundle;
 
 public class loginController implements Initializable {
 
-    @FXML private Label languageID;
-    @FXML private Button logingID;
-    @FXML private Label passwordID;
+    @FXML private Label languageLabel;
+    @FXML private Button loginLabel;
+    @FXML private Label passwordLabel;
     @FXML private TextField passwordTextArea;
-    @FXML private Label usernameID;
+    @FXML private Label usernameLabel;
     @FXML private TextField usernameTextArea;
     @FXML private Label zoneID;
 
@@ -40,6 +38,7 @@ public class loginController implements Initializable {
 
     //login checks if username password correct and sends to appointment screen
     @FXML void onActionLogin(ActionEvent event) throws SQLException, IOException {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("language/Nat");
 
         String username = usernameTextArea.getText();
         String password = passwordTextArea.getText();
@@ -47,10 +46,15 @@ public class loginController implements Initializable {
 
             System.out.println(DBuser.getLoggedOnUser().getID());
             DBappointment.getAppointmentByMonth();
+            DBappointment.getAppointmentSoon();
             stage = (Stage)((Button) event.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
             stage.setScene(new Scene(scene));
             stage.show();
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, resourceBundle.getString("loginErrorLabel"));
+            alert.show();
         }
     }
 
@@ -59,11 +63,12 @@ public class loginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ZoneId localZoneId = ZoneId.systemDefault();
-        LocalTime localTime = LocalTime.now();
-        LocalDate localDate = LocalDate.now();
-        LocalDateTime localDateTime = LocalDateTime.now();
 
-
+        resourceBundle = ResourceBundle.getBundle("language/Nat");
+        usernameLabel.setText(resourceBundle.getString("usernameLabel"));
+        passwordLabel.setText(resourceBundle.getString("passwordLabel"));
+        loginLabel.setText(resourceBundle.getString("loginLabel"));
+        languageLabel.setText(resourceBundle.getString("languageLabel"));
         zoneID.setText(String.valueOf(localZoneId));
 
     }

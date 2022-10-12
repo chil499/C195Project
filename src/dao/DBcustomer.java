@@ -87,5 +87,19 @@ public class DBcustomer {
         Timestamp result  = rs.getTimestamp(columnName);
         return result;
     }
+    public static Boolean checkAppointmentCustomer(int ID) throws SQLException {
+        int appointments = 0;
+        String sql = "SELECT * FROM appointments WHERE Customer_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            appointments++;
+        }
+        if(appointments>0){
+            return false;
+        }
+        return true;
+    }
 
     }

@@ -1,6 +1,7 @@
 package controller;
 
 import dao.DBappointment;
+import dao.DBcustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class appointmentController implements Initializable {
@@ -90,10 +92,21 @@ public class appointmentController implements Initializable {
     }
 
     @FXML void onActionUpdateAppointment(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/updateAppointment.fxml"));
+        loader.load();
+
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/updateAppointment.fxml"));
+
+
+        Appointment selected = appointmentTableView.getSelectionModel().getSelectedItem();
+        updateAppointmentController controller = loader.getController();
+        controller.setAppointment(appointmentTableView.getSelectionModel().getSelectedItem());
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        Parent scene = loader.getRoot();
         stage.setScene(new Scene(scene));
         stage.show();
+
 
     }
 
@@ -103,8 +116,16 @@ public class appointmentController implements Initializable {
 
     }
 
-    @FXML void onActiondDeleteApoointment(ActionEvent event) {
+    @FXML void onActiondDeleteApoointment(ActionEvent event) throws SQLException {
+        Appointment selected = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (selected == null) { return; }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"This will delete the Appointment from the database, do you wish to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
 
+            appointmentTableView.getItems().remove(selected);
+            DBappointment.delete(selected.getId());
+        }
     }
 
 }

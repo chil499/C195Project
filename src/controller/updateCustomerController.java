@@ -60,7 +60,6 @@ public class updateCustomerController {
         customerID = Customer.getAllCustomers().indexOf(selectedCustomer);
         countryComboBox.setItems(Country.getAllCountries());
         stateComboBox.setItems(FirstLevelDivision.getAllStates());
-
         customerID = Customer.getAllCustomers().indexOf(selectedCustomer);
         customerIDTextField.setText(String.valueOf(selectedCustomer.getID()));
         nameTextField.setText(String.valueOf(selectedCustomer.getName()));

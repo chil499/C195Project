@@ -27,14 +27,11 @@ import static model.Appointment.getAllAppointments;
 
 public class addAppointmentController implements Initializable {
 
-    @FXML private TextField appointmentIDTextField;
-    @FXML private Button cancelButton;
-    @FXML private TextField contactTextField;
+
     @FXML private TextField descriptionTextField;
     @FXML private TextField locationTextField;
-    @FXML private DatePicker endDatePicker;
+    @FXML private TextField endDateTextField;
     @FXML private TextField endTimeTextField;
-    @FXML private Button saveButton;
     @FXML public DatePicker startDatePicker;
     @FXML public ComboBox<LocalTime> startTimeComboBox;
     @FXML private TextField titleTextField;
@@ -51,17 +48,12 @@ public class addAppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contactComboBox.setItems(Contact.getAllContacts());
-        LocalTime start = LocalTime.of(8,0);
-        LocalTime end = LocalTime.of(22,0);
+        LocalTime start = LocalTime.of(0,0);
+        LocalTime end = LocalTime.of(23,0);
         while(start.isBefore(end.minusSeconds(1))){
-            start = start.plusHours(1);
             startTimeComboBox.getItems().add(start);
-
+            start = start.plusMinutes(15);
         }
-
-
-
-
     }
 
     @FXML
@@ -70,18 +62,26 @@ public class addAppointmentController implements Initializable {
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
+    }
+    @FXML
+    void onActionSelectStart(ActionEvent event) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String start = startTimeComboBox.getSelectionModel().getSelectedItem().toString() ;
+        String startTime = LocalTime.parse(start,formatter).plusHours(1).toString();
+        endTimeTextField.setText(startTime);
+    }
 
+    @FXML
+    void onActionSelectDate(ActionEvent event) throws IOException{
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        endDateTextField.setText(startDatePicker.getValue().format(formatter));
     }
 
     @FXML
     void onActionSave(ActionEvent event) throws IOException, SQLException {
 
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss");
         String start = startDatePicker.getValue().toString() + " "+ startTimeComboBox.getSelectionModel().getSelectedItem().toString()+ ":00";
-
-        int ID = DBappointment.getNewID();
         String title = titleTextField.getText();
         String description = descriptionTextField.getText();
         String location = locationTextField.getText();
@@ -96,25 +96,23 @@ public class addAppointmentController implements Initializable {
         Timestamp startDB = Timestamp.valueOf(LocalDateTime.parse(start,formatter));
         Timestamp endDB= Timestamp.valueOf(LocalDateTime.parse(start,formatter).plusHours(1));
 
-
-
-
-        if(DBappointment.checkBusinessHour(start,localZone)){
-            DBappointment.insert(ID,title,description,location,type,startDB,endDB,createdDate,createdBy,lastUpdateDate,lastUpdatedBy,customerID,userID,contactID);
-            DBappointment.getAppointmentByMonth();
-            stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-            scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
-            stage.setScene(new Scene(scene));
-            stage.show();
-
+        boolean isWithinBusinessHours = DBappointment.checkBusinessHour(start,localZone);
+        boolean isOverlap = false;
+        if(isWithinBusinessHours){
+            isOverlap = DBappointment.checkOverLap(start);
+            if(isOverlap){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"There is appointment scheduled for this time already");
+                alert.show();
+            }
+            else{
+                DBappointment.insert(title,description,location,type,startDB,endDB,createdDate,createdBy,lastUpdateDate,lastUpdatedBy,customerID,userID,contactID);
+                 DBappointment.getAppointmentByMonth();
+                stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+                scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
+                stage.setScene(new Scene(scene));
+                stage.show();
+            }
         }
-
-
-
-
-
     }
-
-
 }
 

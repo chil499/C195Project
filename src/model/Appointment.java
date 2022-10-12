@@ -3,9 +3,6 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 public class Appointment {
     private int id;
     private String title;
@@ -22,7 +19,7 @@ public class Appointment {
 
     public static void addAppointment(Appointment appointment){allAppointments.add(appointment);}
 
-    public Appointment(int id, String title, String description, String location, String type, String start,String end, int userID, int customerID, int contactID) {
+    public Appointment(int id, String title, String description, String location, String type, String start,String end, int customerID, int userID, int contactID) {
         this.id = id;
         this.title=title;
         this.description=description;

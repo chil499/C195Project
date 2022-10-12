@@ -78,10 +78,17 @@ public class customerController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"This will delete the customer from the database, do you wish to continue?");
         Optional<ButtonType> result = alert.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK){
+            if(DBcustomer.checkAppointmentCustomer(selected.getID())){
+                customerTableView.getItems().remove(selected);
+                Customer.deleteCustomer(selected);
+                DBcustomer.delete(selected.getID());
+            }
+            else{
+                Alert alert2 = new Alert(Alert.AlertType.ERROR, "This customer has scheduled appointments");
+                alert2.show();
+            }
 
-            customerTableView.getItems().remove(selected);
-            Customer.deleteCustomer(selected);
-            DBcustomer.delete(selected.getID());
+
         }
 
     }

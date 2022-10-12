@@ -2,14 +2,14 @@ package dao;
 
 import javafx.scene.control.Alert;
 import model.Appointment;
-import model.Customer;
-
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+
 public class DBappointment {
     private static ZoneId localZone = ZoneId.systemDefault();
+    private static int appointmentCount =0;
     public static int getNewID() throws SQLException {
         int newID =1;
         String sql = "SELECT * FROM appointments";
@@ -27,7 +27,7 @@ public class DBappointment {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowPlusMonth = now.plusMonths(1);
-        String sql = "SELECT * FROM appointments where User_ID = '" + currentUser + "' AND Start BETWEEN '" + now + "' and '" + nowPlusMonth + "'";
+        String sql = "SELECT * FROM appointments where Start BETWEEN '" + now + "' and '" + nowPlusMonth + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery(sql);
 
@@ -50,7 +50,6 @@ public class DBappointment {
             ZonedDateTime zdtEnd = odtEnd.atZoneSameInstant( localZone );
             end = zdtEnd.format(formatter);
 
-
             int customerID = rs.getInt("Customer_ID");
             int userID = rs.getInt("User_ID");
             int contactID = rs.getInt("Contact_ID");
@@ -60,11 +59,9 @@ public class DBappointment {
 
     public static void getAppointmentByWeek() throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        int currentUser = DBuser.getLoggedOnUser().getID();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowPlusWeek = now.plusWeeks(1);
-        String sql = "SELECT * FROM appointments where User_ID = '" + currentUser + "' AND Start BETWEEN '" + now + "' and '" + nowPlusWeek + "'";
+        String sql = "SELECT * FROM appointments where Start BETWEEN '" + now + "' and '" + nowPlusWeek + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery(sql);
         while (rs.next()) {
@@ -89,26 +86,80 @@ public class DBappointment {
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
         }
     }
+    public static void getAppointmentSoon() throws SQLException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime userZoneNow = now.atZone(localZone);
+        ZonedDateTime nowUTC = userZoneNow.withZoneSameInstant(ZoneOffset.UTC);
+        ZonedDateTime utcPlus15 = nowUTC.plusMinutes(15);
 
-    public static void insert(int id, String title, String description, String location, String type, Timestamp start, Timestamp end, Timestamp createDate, String createdBy, Timestamp lastUpdateDate,String lastUpdatedBy,int customerID,int userID, int contactID) throws SQLException{
-        String sql = "INSERT INTO appointments VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String start = nowUTC.format(formatter);
+        String end = utcPlus15.format(formatter);
+
+        int currentUser = DBuser.getLoggedOnUser().getID();
+
+        System.out.print(now);
+        String sql = "SELECT * FROM appointments where User_ID = '" + currentUser + "' AND Start BETWEEN '" + start+ "' and '"  + end + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
-        ps.setInt(1,id);
-        ps.setString(2,title);
-        ps.setString(3,description);
-        ps.setString(4,location);
-        ps.setString(5,type);
-        ps.setTimestamp(6, start);
-        ps.setTimestamp(7, end);
-        ps.setTimestamp(8, createDate);
-        ps.setString(9, createdBy);
-        ps.setTimestamp(10,lastUpdateDate);
-        ps.setString(11,lastUpdatedBy);
-        ps.setInt(12,customerID);
-        ps.setInt(13,userID);
-        ps.setInt(14,contactID);
+        ResultSet rs = ps.executeQuery(sql);
+        while(rs.next()){
+            System.out.print("ok");
+            int id = rs.getInt("Appointment_ID");
+            String startDB = rs.getString("Start");
+            LocalDateTime ldtStart = LocalDateTime.parse( startDB ,formatter);
+            OffsetDateTime odtStart = ldtStart.atOffset( ZoneOffset.UTC );
+            ZonedDateTime zdtStart = odtStart.atZoneSameInstant( localZone );
+            startDB = zdtStart.format(formatter);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have appointment '"+id+"' starting at: " + startDB );
+            alert.show();
+            appointmentCount++;
+        }
+        if(appointmentCount ==0){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have no upcoming appointments");
+            alert.show();
+        }
+
+    }
+
+    public static void insert(String title, String description, String location, String type, Timestamp start, Timestamp end, Timestamp createDate, String createdBy, Timestamp lastUpdateDate,String lastUpdatedBy,int customerID,int userID, int contactID) throws SQLException{
+        String sql = "INSERT INTO appointments (Title, Description,Location,Type,Start,End,Create_Date,Created_By,Last_Update,Last_Updated_By,Customer_ID, User_ID,Contact_ID)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setString(1,title);
+        ps.setString(2,description);
+        ps.setString(3,location);
+        ps.setString(4,type);
+        ps.setTimestamp(5, start);
+        ps.setTimestamp(6, end);
+        ps.setTimestamp(7, createDate);
+        ps.setString(8, createdBy);
+        ps.setTimestamp(9,lastUpdateDate);
+        ps.setString(10,lastUpdatedBy);
+        ps.setInt(11,customerID);
+        ps.setInt(12,userID);
+        ps.setInt(13,contactID);
         ps.executeUpdate();
         System.out.print("Insert successful");
+
+    }
+    public static void update(String title, String description, String location, String type, Timestamp start,Timestamp end, Timestamp createDate,String createdBy, Timestamp lastUpdateDate,String lastUpdatedBy,int customerID, int userID, int contactID,int id) throws SQLException {
+        String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?,Created_By = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID=? WHERE Appointment_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setString(1,title);
+        ps.setString(2,description);
+        ps.setString(3,location);
+        ps.setString(4,type);
+        ps.setTimestamp(5, start);
+        ps.setTimestamp(6, end);
+        ps.setTimestamp(7, createDate);
+        ps.setString(8, createdBy);
+        ps.setTimestamp(9,lastUpdateDate);
+        ps.setString(10,lastUpdatedBy);
+        ps.setInt(11,customerID);
+        ps.setInt(12,userID);
+        ps.setInt(13,contactID);
+        ps.setInt(14,id);
+        ps.executeUpdate();
+
 
     }
     public static Boolean checkBusinessHour(String start,String localZone){
@@ -135,4 +186,87 @@ public class DBappointment {
         return false;
     }
 
+    public static Boolean checkOverLap(String start) throws SQLException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime checkStart = LocalDateTime.parse(start,formatter).atOffset( ZoneOffset.UTC).toLocalDateTime();
+        LocalDateTime checkEnd = checkStart.plusHours(1);
+        String sql = "SELECT * FROM appointments";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery(sql);
+
+        while (rs.next()) {
+            Timestamp startTimes = rs.getTimestamp("Start");
+            Timestamp endTimes =rs.getTimestamp("End");
+            LocalDateTime startDB = startTimes.toLocalDateTime();
+            LocalDateTime endDB =  endTimes.toLocalDateTime();
+            if(checkStart.isAfter(startDB) && checkStart.isBefore(endDB)){
+                return true;
+            }else if(startDB.isAfter(checkStart) && startDB.isBefore(checkEnd)) {
+                return true;
+            }else if(checkEnd.isAfter(startDB) && checkEnd.isBefore(endDB)){
+               return true;
+            }else if(endDB.isAfter(checkStart) && endDB.isBefore(checkEnd)){
+                return true;
+            }else if(checkStart.isEqual(startDB) && checkEnd.isEqual(endDB)){
+                return true;
+            }
+        }
+       return false;
+
+    }
+    public static Boolean checkOverLapUpdate(String start) throws SQLException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime checkStart = LocalDateTime.parse(start,formatter).atOffset( ZoneOffset.UTC).toLocalDateTime();
+        LocalDateTime checkEnd = checkStart.plusHours(1);
+        String sql = "SELECT * FROM appointments";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery(sql);
+
+        while (rs.next()) {
+            Timestamp startTimes = rs.getTimestamp("Start");
+            Timestamp endTimes =rs.getTimestamp("End");
+            LocalDateTime startDB = startTimes.toLocalDateTime();
+            LocalDateTime endDB =  endTimes.toLocalDateTime();
+            if(checkStart.isAfter(startDB) && checkStart.isBefore(endDB)){
+                return true;
+            }else if(startDB.isAfter(checkStart) && startDB.isBefore(checkEnd)) {
+                return true;
+            }else if(checkEnd.isAfter(startDB) && checkEnd.isBefore(endDB)){
+                return true;
+            }else if(endDB.isAfter(checkStart) && endDB.isBefore(checkEnd)){
+                return true;
+            }else if(checkStart.isEqual(startDB) && checkEnd.isEqual(endDB)){
+                return false;
+            }
+        }
+        return false;
+
+    }
+
+    public static void delete(int ID) throws SQLException {
+        String sql = "DELETE FROM appointments where appointment_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ps.executeUpdate();
+    }
+
+    public static String select( String columnName,int ID) throws SQLException {
+        String sql = "SELECT * FROM appointments WHERE Appointment_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        String result  = rs.getString(columnName);
+        return result;
+    }
+
+    public static Timestamp selectTimestamp( String columnName,int ID) throws SQLException {
+        String sql = "SELECT * FROM appointments WHERE Appointment_ID = ?";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ps.setInt(1,ID);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        Timestamp result  = rs.getTimestamp(columnName);
+        return result;
+    }
 }
