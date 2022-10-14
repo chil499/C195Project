@@ -50,29 +50,37 @@ public class addCustomerController implements Initializable {
 
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
-        int ID = getNewID();
-        String name = nameTextField.getText();
-        String address = addressTextField.getText();
-        String zip = postalTextField.getText();
-        String phone = phoneTextField.getText();
-        Timestamp createDate = new Timestamp(System.currentTimeMillis());
-        String createBy = "admin";
-        Timestamp lastCreateDate = new Timestamp(System.currentTimeMillis());
-        String lastCreateBy = "admin";
-        int divisionID = stateSelected.getDivisionID();
-        String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
-        String state = DBfirstLevelDivision.returnState(divisionID);
-        DBcustomer.insert(ID,name,address,zip,phone,createDate,createBy,lastCreateDate,lastCreateBy,divisionID);
-
-        Customer.addCustomer(new Customer(ID,name,address,zip,phone,divisionID,country,state));
+        try {
 
 
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
+            int ID = getNewID();
+            String name = nameTextField.getText();
+            String address = addressTextField.getText();
+            String zip = postalTextField.getText();
+            String phone = phoneTextField.getText();
+            Timestamp createDate = new Timestamp(System.currentTimeMillis());
+            String createBy = "admin";
+            Timestamp lastCreateDate = new Timestamp(System.currentTimeMillis());
+            String lastCreateBy = "admin";
+            int divisionID = stateSelected.getDivisionID();
+            String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
+            String state = DBfirstLevelDivision.returnState(divisionID);
+            DBcustomer.insert(ID, name, address, zip, phone, createDate, createBy, lastCreateDate, lastCreateBy, divisionID);
+
+            Customer.addCustomer(new Customer(ID, name, address, zip, phone, divisionID, country, state));
+
+
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }catch(NumberFormatException e){
+
+        }catch(NullPointerException e){
+
+        }
     }
 
     @FXML

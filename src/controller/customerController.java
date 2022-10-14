@@ -21,8 +21,6 @@ import java.util.ResourceBundle;
 
 public class customerController implements Initializable {
 
-    @FXML private Button addCustomer;
-    @FXML private Button appointmentButton;
     @FXML private TableView<Customer> customerTableView;
     @FXML private TableColumn<Customer, String> customerAddressCol;
     @FXML private TableColumn<Customer, String> customerCountryCol;
@@ -32,13 +30,15 @@ public class customerController implements Initializable {
     @FXML private TableColumn<Customer, Integer> customerPostalCol;
     @FXML private TableColumn<Customer, String> customerStateCol;
 
-    @FXML private Button deleteCustomer;
-    @FXML private Button reportButton;
-    @FXML private Button updateCustomer;
 
 @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        customerTableView.setItems(Customer.getAllCustomers());
+    try {
+        DBcustomer.getCustomerObjects();
+    } catch (SQLException throwables) {
+        throwables.printStackTrace();
+    }
+    customerTableView.setItems(Customer.getAllCustomers());
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("ID"));
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
@@ -64,6 +64,7 @@ public class customerController implements Initializable {
     @FXML
     void onActionAppointment(ActionEvent event) throws IOException, SQLException {
 
+        DBappointment.getAppointmentByMonth();
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
         stage.setScene(new Scene(scene));
@@ -78,19 +79,15 @@ public class customerController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"This will delete the customer from the database, do you wish to continue?");
         Optional<ButtonType> result = alert.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK){
-            if(DBcustomer.checkAppointmentCustomer(selected.getID())){
-                customerTableView.getItems().remove(selected);
-                Customer.deleteCustomer(selected);
-                DBcustomer.delete(selected.getID());
-            }
-            else{
-                Alert alert2 = new Alert(Alert.AlertType.ERROR, "This customer has scheduled appointments");
-                alert2.show();
-            }
 
+            Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Customer " + DBcustomer.select("Customer_Name", selected.getID()) + " has been deleted along with all their appointments.");
+            alert2.show();
+            DBcustomer.deleteCustomerAppointments(selected.getID());
+            customerTableView.getItems().remove(selected);
+            Customer.deleteCustomer(selected);
+            DBcustomer.delete(selected.getID());
 
         }
-
     }
 
     @FXML

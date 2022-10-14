@@ -6,18 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.Country;
-import model.User;
+
 
 
 import java.sql.SQLException;
-import java.util.Locale;
-import java.util.ResourceBundle;
+
 
 
 public class Main extends Application {
 
-    public int currentUser;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -31,7 +28,6 @@ public class Main extends Application {
         DBconnection.openConnection();
         DBcountry.addCountryObjects();
         DBfirstLevelDivision.addfirstLevelDivsionObjects();
-        DBcustomer.addCustomerObjects();
         DBcontact.addContactObjects();
 
         launch(args);

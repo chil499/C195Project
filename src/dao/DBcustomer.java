@@ -1,5 +1,6 @@
 package dao;
 
+import javafx.scene.control.Alert;
 import javafx.util.converter.TimeStringConverter;
 import model.Customer;
 
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
 
 public class DBcustomer {
 
-    public static void addCustomerObjects() throws SQLException {
+    public static void getCustomerObjects() throws SQLException {
+        Customer.getAllCustomers().clear();
         String sql = "SELECT * FROM customers";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery(sql);
@@ -28,18 +30,18 @@ public class DBcustomer {
 
     }
     public static void insert(int id,String name, String address, String zip, String phone, Timestamp createDate, String createdBy, Timestamp lastUpdateDate, String lastUpdatedBy, int divisionID) throws SQLException{
-         String sql = "INSERT INTO customers VALUES(?,?,?,?,?,?,?,?,?,?)";
+         String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?,?,?,?,?,?,?,?,?)";
          PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
-         ps.setInt(1,id);
-         ps.setString(2,name);
-         ps.setString(3,address);
-         ps.setString(4,zip);
-         ps.setString(5,phone);
-         ps.setTimestamp(6, createDate);
-         ps.setString(7,createdBy);
-         ps.setTimestamp(8, lastUpdateDate);
-         ps.setString(9, lastUpdatedBy);
-         ps.setInt(10,divisionID);
+
+         ps.setString(1,name);
+         ps.setString(2,address);
+         ps.setString(3,zip);
+         ps.setString(4,phone);
+         ps.setTimestamp(5, createDate);
+         ps.setString(6,createdBy);
+         ps.setTimestamp(7, lastUpdateDate);
+         ps.setString(8, lastUpdatedBy);
+         ps.setInt(9,divisionID);
          ps.executeUpdate();
          System.out.print("Insert successful");
 
@@ -68,6 +70,8 @@ public class DBcustomer {
         ps.setInt(1,ID);
         ps.executeUpdate();
 
+
+
     }
     public static String select( String columnName,int ID) throws SQLException {
         String sql = "SELECT * FROM customers WHERE Customer_ID = ?";
@@ -87,19 +91,12 @@ public class DBcustomer {
         Timestamp result  = rs.getTimestamp(columnName);
         return result;
     }
-    public static Boolean checkAppointmentCustomer(int ID) throws SQLException {
-        int appointments = 0;
-        String sql = "SELECT * FROM appointments WHERE Customer_ID = ?";
+    public static void deleteCustomerAppointments(int ID) throws SQLException {
+
+        String sql = "DELETE FROM appointments WHERE Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ps.setInt(1,ID);
-        ResultSet rs = ps.executeQuery();
-        while(rs.next()){
-            appointments++;
-        }
-        if(appointments>0){
-            return false;
-        }
-        return true;
+        ps.executeUpdate();
     }
 
     }

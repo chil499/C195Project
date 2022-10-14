@@ -10,16 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class DBappointment {
     private static ZoneId localZone = ZoneId.systemDefault();
     private static int appointmentCount =0;
-    public static int getNewID() throws SQLException {
-        int newID =1;
-        String sql = "SELECT * FROM appointments";
-        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery(sql);
-        while(rs.next()){
-            newID++;
-        }
-        return newID;
-    }
+
     public static void getAppointmentByMonth() throws SQLException {
         Appointment.getAllAppointments().clear();
         int currentUser = DBuser.getLoggedOnUser().getID();
@@ -58,6 +49,7 @@ public class DBappointment {
     }
 
     public static void getAppointmentByWeek() throws SQLException {
+        Appointment.getAllAppointments().clear();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowPlusWeek = now.plusWeeks(1);
@@ -81,6 +73,34 @@ public class DBappointment {
             ZonedDateTime zdtEnd = odtEnd.atZoneSameInstant( localZone );
             end = zdtEnd.format(formatter);
             int customerID = rs.getInt("Customer_ID");
+            int userID = rs.getInt("User_ID");
+            int contactID = rs.getInt("Contact_ID");
+            Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
+        }
+    }
+    public static void getAppointmentByCustomer(int customerID) throws SQLException {
+        Appointment.getAllAppointments().clear();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String sql = "SELECT * FROM appointments where Customer_Id = '"+customerID+"'";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery(sql);
+        while (rs.next()) {
+            int id = rs.getInt("Appointment_ID");
+            String title = rs.getString("Title");
+            String description = rs.getString("Description");
+            String location = rs.getString("Location");
+            String type = rs.getString("Type");
+            String start = rs.getString("Start");
+            LocalDateTime ldtStart = LocalDateTime.parse( start ,formatter);
+            OffsetDateTime odtStart = ldtStart.atOffset( ZoneOffset.UTC );
+            ZonedDateTime zdtStart = odtStart.atZoneSameInstant( localZone );
+            start = zdtStart.format(formatter);
+            String end= rs.getString("End");
+            LocalDateTime ldtEnd = LocalDateTime.parse( end ,formatter);
+            OffsetDateTime odtEnd = ldtEnd.atOffset( ZoneOffset.UTC );
+            ZonedDateTime zdtEnd = odtEnd.atZoneSameInstant( localZone );
+            end = zdtEnd.format(formatter);
             int userID = rs.getInt("User_ID");
             int contactID = rs.getInt("Contact_ID");
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));

@@ -55,9 +55,8 @@ public class Customer {
     public static void updateCustomer(int index,Customer newCustomer){allCustomers.set(index,newCustomer);}
 
     public static boolean deleteCustomer(Customer selectedCustomer){return allCustomers.remove(selectedCustomer);}
-
     @Override
     public String toString(){
-        return(country);
-    }
+        return(name);
+   }
 }

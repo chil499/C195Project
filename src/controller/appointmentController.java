@@ -52,6 +52,11 @@ public class appointmentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            DBappointment.getAppointmentByMonth();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         appointmentTableView.setItems(Appointment.getAllAppointments());
         appointmentIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -88,7 +93,10 @@ public class appointmentController implements Initializable {
     }
 
     @FXML void onActionReport(ActionEvent event) throws IOException {
-
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
 
     @FXML void onActionUpdateAppointment(ActionEvent event) throws IOException {
