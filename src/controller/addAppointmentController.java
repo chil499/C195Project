@@ -10,24 +10,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.Appointment;
 import model.Contact;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static model.Appointment.getAllAppointments;
 
 public class addAppointmentController implements Initializable {
 
-
+    //initalize text fields
     @FXML private TextField descriptionTextField;
     @FXML private TextField locationTextField;
     @FXML private TextField endDateTextField;
@@ -46,6 +42,7 @@ public class addAppointmentController implements Initializable {
     Parent scene;
 
     @Override
+    //setting all the combo boxes
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contactComboBox.setItems(Contact.getAllContacts());
         LocalTime start = LocalTime.of(0,0);
@@ -56,6 +53,7 @@ public class addAppointmentController implements Initializable {
         }
     }
 
+    //sends back to appointment page
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -63,6 +61,7 @@ public class addAppointmentController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+    //sets end time on hour ahead of start time
     @FXML
     void onActionSelectStart(ActionEvent event) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -71,17 +70,19 @@ public class addAppointmentController implements Initializable {
         endTimeTextField.setText(startTime);
     }
 
+    //sets end date to same day as start date
     @FXML
     void onActionSelectDate(ActionEvent event) throws IOException{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         endDateTextField.setText(startDatePicker.getValue().format(formatter));
     }
 
+    //saves the appointment and sends back to appointment screen
     @FXML
     void onActionSave(ActionEvent event) throws IOException, SQLException {
-
+    try {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String start = startDatePicker.getValue().toString() + " "+ startTimeComboBox.getSelectionModel().getSelectedItem().toString()+ ":00";
+        String start = startDatePicker.getValue().toString() + " " + startTimeComboBox.getSelectionModel().getSelectedItem().toString() + ":00";
         String title = titleTextField.getText();
         String description = descriptionTextField.getText();
         String location = locationTextField.getText();
@@ -91,28 +92,37 @@ public class addAppointmentController implements Initializable {
         int contactID = contactComboBox.getSelectionModel().getSelectedItem().getID();
         String createdBy = DBuser.getLoggedOnUser().getName();
         String lastUpdatedBy = DBuser.getLoggedOnUser().getName();
-        Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis()); ;
+        Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis());
         Timestamp createdDate = new Timestamp(System.currentTimeMillis());
-        Timestamp startDB = Timestamp.valueOf(LocalDateTime.parse(start,formatter));
-        Timestamp endDB= Timestamp.valueOf(LocalDateTime.parse(start,formatter).plusHours(1));
+        Timestamp startDB = Timestamp.valueOf(LocalDateTime.parse(start, formatter));
+        Timestamp endDB = Timestamp.valueOf(LocalDateTime.parse(start, formatter).plusHours(1));
 
-        boolean isWithinBusinessHours = DBappointment.checkBusinessHour(start,localZone);
+        boolean isWithinBusinessHours = DBappointment.checkBusinessHour(start, localZone);
         boolean isOverlap = false;
-        if(isWithinBusinessHours){
+        if (isWithinBusinessHours) {
             isOverlap = DBappointment.checkOverLap(start);
-            if(isOverlap){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"There is appointment scheduled for this time already");
+            if (isOverlap) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "There is appointment scheduled for this time already");
                 alert.show();
-            }
-            else{
-                DBappointment.insert(title,description,location,type,startDB,endDB,createdDate,createdBy,lastUpdateDate,lastUpdatedBy,customerID,userID,contactID);
-                 DBappointment.getAppointmentByMonth();
-                stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+            } else {
+                DBappointment.insert(title, description, location, type, startDB, endDB, createdDate, createdBy, lastUpdateDate, lastUpdatedBy, customerID, userID, contactID);
+                DBappointment.getAppointmentByMonth();
+                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
                 stage.setScene(new Scene(scene));
                 stage.show();
             }
         }
+    }catch(NumberFormatException e){
+        Alert alert = new Alert(Alert.AlertType.ERROR,"Please make sure all fields are filled out correctly");
+        alert.show();
+    }catch(NullPointerException e){
+        Alert alert = new Alert(Alert.AlertType.ERROR,"Please make sure all fields are filled out correctly");
+        alert.show();
+    }catch(SQLIntegrityConstraintViolationException e){
+        Alert alert = new Alert(Alert.AlertType.ERROR,"Please sure a that customer or user exists");
+        alert.show();
+    }
     }
 }
 

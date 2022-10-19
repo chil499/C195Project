@@ -33,12 +33,10 @@ public class customerController implements Initializable {
 
 @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-    try {
-        DBcustomer.getCustomerObjects();
-    } catch (SQLException throwables) {
-        throwables.printStackTrace();
-    }
-    customerTableView.setItems(Customer.getAllCustomers());
+
+
+
+        customerTableView.setItems(Customer.getAllCustomers());
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("ID"));
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
@@ -91,8 +89,11 @@ public class customerController implements Initializable {
     }
 
     @FXML
-    void onActionReport(ActionEvent event) {
-
+    void onActionReport(ActionEvent event) throws IOException {
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
 
     @FXML

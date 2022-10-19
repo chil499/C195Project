@@ -12,6 +12,7 @@ public class DBcustomer {
 
     public static void getCustomerObjects() throws SQLException {
         Customer.getAllCustomers().clear();
+        Customer.getAllCustomers();
         String sql = "SELECT * FROM customers";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery(sql);

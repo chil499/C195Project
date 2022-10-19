@@ -16,6 +16,7 @@ import model.Contact;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,23 +26,40 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class updateAppointmentController implements Initializable {
-    @FXML private TextField appointmentIDTextField;
-    @FXML private Button cancelButton;
-    @FXML private ComboBox<Contact> contactComboBox;
-    @FXML private TextField descriptionTextField;
-    @FXML private TextField endDateTextField;
-    @FXML private TextField endTimeTextField;
-    @FXML private Button saveButton;
-    @FXML private TextField startDateTextField;
-    @FXML private TextField startTimeTextField;
-    @FXML private TextField titleTextField;
-    @FXML private TextField locationTextField;
-    @FXML private TextField typeTextField;
-    @FXML private TextField getEndDateTextField;
-    @FXML private TextField userIDTextField;
-    @FXML private DatePicker startDatePicker;
-    @FXML private TextField customerIDTextField;
-    @FXML private ComboBox<LocalTime> startTimeComboBox;
+    @FXML
+    private TextField appointmentIDTextField;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private ComboBox<Contact> contactComboBox;
+    @FXML
+    private TextField descriptionTextField;
+    @FXML
+    private TextField endDateTextField;
+    @FXML
+    private TextField endTimeTextField;
+    @FXML
+    private Button saveButton;
+    @FXML
+    private TextField startDateTextField;
+    @FXML
+    private TextField startTimeTextField;
+    @FXML
+    private TextField titleTextField;
+    @FXML
+    private TextField locationTextField;
+    @FXML
+    private TextField typeTextField;
+    @FXML
+    private TextField getEndDateTextField;
+    @FXML
+    private TextField userIDTextField;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private TextField customerIDTextField;
+    @FXML
+    private ComboBox<LocalTime> startTimeComboBox;
     private int appointmentID;
     private static String localZone = ZoneId.systemDefault().getId();
 
@@ -50,61 +68,73 @@ public class updateAppointmentController implements Initializable {
 
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
     }
 
     @FXML
-    void onActionSelectStart(ActionEvent event){
+    void onActionSelectStart(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String start = startTimeComboBox.getSelectionModel().getSelectedItem().toString() ;
-        String startTime = LocalTime.parse(start,formatter).plusHours(1).toString();
+        String start = startTimeComboBox.getSelectionModel().getSelectedItem().toString();
+        String startTime = LocalTime.parse(start, formatter).plusHours(1).toString();
         endTimeTextField.setText(startTime);
     }
+
     @FXML
-    void onActionSelectDate(ActionEvent event){
+    void onActionSelectDate(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         endDateTextField.setText(startDatePicker.getValue().format(formatter));
     }
 
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String start = startDatePicker.getValue().toString() + " "+ startTimeComboBox.getSelectionModel().getSelectedItem().toString()+ ":00";
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String start = startDatePicker.getValue().toString() + " " + startTimeComboBox.getSelectionModel().getSelectedItem().toString() + ":00";
 
-        int ID = appointmentID;
-        String title = titleTextField.getText();
-        String description = descriptionTextField.getText();
-        String location = locationTextField.getText();
-        String type = typeTextField.getText();
-        int userID = Integer.parseInt(userIDTextField.getText());
-        int customerID = Integer.parseInt(customerIDTextField.getText());
-        int contactID = contactComboBox.getSelectionModel().getSelectedItem().getID();
-        String createdBy = DBappointment.select("Created_By",ID);
-        String lastUpdatedBy = DBuser.getLoggedOnUser().getName();
-        Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis()); ;
-        Timestamp createdDate = DBappointment.selectTimestamp("Create_Date",ID);
-        Timestamp startDB = Timestamp.valueOf(LocalDateTime.parse(start,formatter));
-        Timestamp endDB= Timestamp.valueOf(LocalDateTime.parse(start,formatter).plusHours(1));
-        boolean isWithinBusinessHours = DBappointment.checkBusinessHour(start,localZone);
-        boolean isOverlap = false;
+            int ID = appointmentID;
+            String title = titleTextField.getText();
+            String description = descriptionTextField.getText();
+            String location = locationTextField.getText();
+            String type = typeTextField.getText();
+            int userID = Integer.parseInt(userIDTextField.getText());
+            int customerID = Integer.parseInt(customerIDTextField.getText());
+            int contactID = contactComboBox.getSelectionModel().getSelectedItem().getID();
+            String createdBy = DBappointment.select("Created_By", ID);
+            String lastUpdatedBy = DBuser.getLoggedOnUser().getName();
+            Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis());
+            ;
+            Timestamp createdDate = DBappointment.selectTimestamp("Create_Date", ID);
+            Timestamp startDB = Timestamp.valueOf(LocalDateTime.parse(start, formatter));
+            Timestamp endDB = Timestamp.valueOf(LocalDateTime.parse(start, formatter).plusHours(1));
+            boolean isWithinBusinessHours = DBappointment.checkBusinessHour(start, localZone);
+            boolean isOverlap = false;
 
-        if(isWithinBusinessHours){
-            isOverlap = DBappointment.checkOverLapUpdate(start);
-            if(isOverlap){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"There is appointment scheduled for this time already");
-                alert.show();
+            if (isWithinBusinessHours) {
+                isOverlap = DBappointment.checkOverLapUpdate(start);
+                if (isOverlap) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "There is appointment scheduled for this time already");
+                    alert.show();
+                } else {
+                    DBappointment.update(title, description, location, type, startDB, endDB, createdDate, createdBy, lastUpdateDate, lastUpdatedBy, customerID, userID, contactID, appointmentID);
+                    DBappointment.getAppointmentByMonth();
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
+                    stage.setScene(new Scene(scene));
+                    stage.show();
+                }
             }
-            else{
-                DBappointment.update(title,description,location,type,startDB,endDB,createdDate,createdBy,lastUpdateDate,lastUpdatedBy,customerID,userID,contactID,appointmentID);
-                DBappointment.getAppointmentByMonth();
-                stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
-                stage.setScene(new Scene(scene));
-                stage.show();
-            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please make sure all fields are filled out correctly");
+            alert.show();
+        } catch (NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please make sure all fields are filled out correctly");
+            alert.show();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please sure that customer or user exists");
+            alert.show();
         }
 
 

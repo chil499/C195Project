@@ -1,10 +1,16 @@
 package dao;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import model.Appointment;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 public class DBappointment {
@@ -106,6 +112,27 @@ public class DBappointment {
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
         }
     }
+    public static long getAppointmentByCustomerTimes(int customerID) throws SQLException, ParseException {
+        Appointment.getAllAppointments().clear();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long minutes= 0;
+        String sql = "SELECT * FROM appointments where Customer_Id = '"+customerID+"'";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery(sql);
+        while (rs.next()) {
+            String start = rs.getString("Start");
+            Date startTime =  formatter.parse(start);
+            String end= rs.getString("End");
+            Date endTime =  formatter.parse(end);
+            minutes += ( endTime.getTime() - startTime.getTime());
+
+
+        }
+        long totalMinutes = TimeUnit.MILLISECONDS.toMinutes(minutes);
+        System.out.println(totalMinutes);
+        return totalMinutes;
+
+    }
     public static void getAppointmentSoon() throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -138,6 +165,17 @@ public class DBappointment {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have no upcoming appointments");
             alert.show();
         }
+
+    }
+    public static int getAppointmentTypeMonth(String month, String type) throws SQLException {
+        int appointments = 0;
+        String sql = "SELECT * FROM appointments where Type = '" + type + "' AND monthname(Start) = '"+month+"'";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery(sql);
+        while(rs.next()) {
+            appointments++;
+        }
+        return appointments;
 
     }
 
@@ -278,6 +316,18 @@ public class DBappointment {
         rs.next();
         String result  = rs.getString(columnName);
         return result;
+    }
+    public static ObservableList<String> selectType() throws SQLException {
+        ObservableList<String> typeList = FXCollections.observableArrayList();
+        String sql = "SELECT Distinct(Type) FROM appointments";
+        PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()){
+            String type = rs.getString("Type");
+            typeList.add(type);
+        }
+        return typeList;
     }
 
     public static Timestamp selectTimestamp( String columnName,int ID) throws SQLException {

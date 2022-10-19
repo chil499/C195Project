@@ -3,12 +3,14 @@ package controller;
 import dao.DBcountry;
 import dao.DBcustomer;
 import dao.DBfirstLevelDivision;
+import dao.DBuser;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -82,29 +84,37 @@ public class updateCustomerController {
     }
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
-        int ID = Integer.parseInt(customerIDTextField.getText());
-        String name = nameTextField.getText();
-        String address = addressTextField.getText();
-        String zip = postalTextField.getText();
-        String phone = phoneTextField.getText();
-        Timestamp createDate = new Timestamp(System.currentTimeMillis());
-        String createBy = "admin";
-        Timestamp lastCreateDate = DBcustomer.selectTimestamp("Last_Update",ID);
-        String lastCreateBy = DBcustomer.select("Last_Updated_By",ID);
-        int divisionID = stateSelected.getDivisionID();
-        String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
-        String state = DBfirstLevelDivision.returnState(divisionID);
-        DBcustomer.update(name,address,zip,phone,createDate,createBy,lastCreateDate,lastCreateBy,divisionID,ID);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
+            int ID = Integer.parseInt(customerIDTextField.getText());
+            String name = nameTextField.getText();
+            String address = addressTextField.getText();
+            String zip = postalTextField.getText();
+            String phone = phoneTextField.getText();
+            Timestamp createDate = new Timestamp(System.currentTimeMillis());
+            String createBy = DBuser.getLoggedOnUser().getName();
+            Timestamp lastCreateDate = DBcustomer.selectTimestamp("Last_Update", ID);
+            String lastCreateBy = DBcustomer.select("Last_Updated_By", ID);
+            int divisionID = stateSelected.getDivisionID();
+            String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
+            String state = DBfirstLevelDivision.returnState(divisionID);
+            DBcustomer.update(name, address, zip, phone, createDate, createBy, lastCreateDate, lastCreateBy, divisionID, ID);
 
-        Customer temp = new Customer(ID,name,address,zip,phone,divisionID,country,state);
-        Customer.updateCustomer(customerID,temp);
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
+            Customer temp = new Customer(ID, name, address, zip, phone, divisionID, country, state);
+            Customer.updateCustomer(customerID, temp);
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
+            stage.setScene(new Scene(scene));
+            stage.show();
+
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please make sure all fields are filled out correctly");
+            alert.show();
+        } catch (NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please make sure all fields are filled out correctly");
+            alert.show();
+        }
     }
-
 }
 

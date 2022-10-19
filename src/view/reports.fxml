@@ -77,12 +77,12 @@
             </HBox>
             <HBox prefHeight="307.0" prefWidth="1359.0">
                <children>
-                  <ComboBox fx:id="customerHourComboBox" onAction="#onActionCustomerHourSelect" prefWidth="150.0">
+                  <ComboBox fx:id="customerMinutesComboBox" onAction="#onActionCustomerHourSelect" prefWidth="150.0">
                      <HBox.margin>
                         <Insets left="50.0" top="50.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <TextField fx:id="totalHoursTextField">
+                  <TextField fx:id="totalMinutesTextField">
                      <HBox.margin>
                         <Insets bottom="50.0" left="50.0" top="50.0" />
                      </HBox.margin>
@@ -91,7 +91,7 @@
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionQuit" text="Quit">
+                  <Button fx:id = "exitButton" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Exit">
                      <HBox.margin>
                         <Insets bottom="25.0" right="25.0" />
                      </HBox.margin>

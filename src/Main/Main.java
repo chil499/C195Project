@@ -19,7 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-        primaryStage.setTitle("Appointment");
+        primaryStage.setTitle("Appointment Scheduling Application");
         primaryStage.setScene(new Scene(root, 800, 500));
         primaryStage.show();
     }
@@ -29,6 +29,7 @@ public class Main extends Application {
         DBcountry.addCountryObjects();
         DBfirstLevelDivision.addfirstLevelDivsionObjects();
         DBcontact.addContactObjects();
+        DBcustomer.getCustomerObjects();
 
         launch(args);
         DBconnection.closeConnection();

@@ -4,6 +4,7 @@ package controller;
 import dao.DBcountry;
 import dao.DBcustomer;
 import dao.DBfirstLevelDivision;
+import dao.DBuser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -29,6 +31,7 @@ import static model.Customer.getAllCustomers;
 
 public class addCustomerController implements Initializable {
 
+    //initalize textfelds and combo boxes
     @FXML private TextField addressTextField;
     @FXML private ComboBox<Country> countryComboBox;
     @FXML private TextField nameTextField;
@@ -40,6 +43,7 @@ public class addCustomerController implements Initializable {
     Parent scene;
     ObservableList<FirstLevelDivision> states = FXCollections.observableArrayList();
 
+    //sends back to customer page
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -48,11 +52,10 @@ public class addCustomerController implements Initializable {
         stage.show();
     }
 
+    //savces customer and sends back to customer page
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
         try {
-
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             FirstLevelDivision stateSelected = stateComboBox.getSelectionModel().getSelectedItem();
             int ID = getNewID();
@@ -61,9 +64,9 @@ public class addCustomerController implements Initializable {
             String zip = postalTextField.getText();
             String phone = phoneTextField.getText();
             Timestamp createDate = new Timestamp(System.currentTimeMillis());
-            String createBy = "admin";
+            String createBy = DBuser.getLoggedOnUser().getName();
             Timestamp lastCreateDate = new Timestamp(System.currentTimeMillis());
-            String lastCreateBy = "admin";
+            String lastCreateBy = DBuser.getLoggedOnUser().getName();;
             int divisionID = stateSelected.getDivisionID();
             String country = DBcountry.returnCountry(DBcountry.returnCountryID(divisionID));
             String state = DBfirstLevelDivision.returnState(divisionID);
@@ -77,12 +80,15 @@ public class addCustomerController implements Initializable {
             stage.setScene(new Scene(scene));
             stage.show();
         }catch(NumberFormatException e){
-
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Please make sure all fields are filled out correctly");
+            alert.show();
         }catch(NullPointerException e){
-
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Please make sure all fields are filled out correctly");
+            alert.show();
         }
     }
 
+    //when country is selected, sets the state combo box to that countries states
     @FXML
     void onActionCountrySelect(ActionEvent event){
         Country selected =  countryComboBox.getSelectionModel().getSelectedItem();
