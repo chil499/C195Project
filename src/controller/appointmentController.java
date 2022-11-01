@@ -25,15 +25,7 @@ import java.util.ResourceBundle;
 
 public class appointmentController implements Initializable {
 
-    @FXML private Button addAppointment;
-    @FXML private Button customerButton;
-    @FXML private Button deleteAppointment;
-    @FXML private RadioButton monthRadio;
-    @FXML private Button reportButton;
-    @FXML private Button updateAppointment;
-    @FXML private ToggleGroup weekOrMonth;
-    @FXML private RadioButton weekRadio;
-
+//initializes all the tables
     @FXML private TableView<Appointment> appointmentTableView;
     @FXML private TableColumn<Appointment, Integer> appointmentIDCol;
     @FXML private TableColumn<Appointment, String> titleCol;
@@ -51,6 +43,7 @@ public class appointmentController implements Initializable {
     Parent scene;
 
     @Override
+    //sets values to all the tables
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             DBappointment.getAppointmentByMonth();
@@ -70,6 +63,7 @@ public class appointmentController implements Initializable {
         contactIDCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
 
     }
+    //sends to add appointment screen
     @FXML void onActionAddApointment(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/addAppointment.fxml"));
@@ -77,7 +71,7 @@ public class appointmentController implements Initializable {
         stage.show();
 
     }
-
+//sends to customer screen
     @FXML void onActionCustomer(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
@@ -86,19 +80,25 @@ public class appointmentController implements Initializable {
 
 
     }
-
+//shows reports my month
     @FXML void onActionMonthSelected(ActionEvent event) throws SQLException {
         Appointment.getAllAppointments().clear();
         DBappointment.getAppointmentByMonth();
     }
 
+    @FXML void onActionAllSelected(ActionEvent event) throws SQLException {
+        Appointment.getAllAppointments().clear();
+        DBappointment.getAppointmentAll();
+    }
+
+    //sensds to report screen
     @FXML void onActionReport(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
+    //selects appointment and loads the update page
     @FXML void onActionUpdateAppointment(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/view/updateAppointment.fxml"));
@@ -108,6 +108,7 @@ public class appointmentController implements Initializable {
 
 
         Appointment selected = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (selected == null) { return; }
         updateAppointmentController controller = loader.getController();
         controller.setAppointment(appointmentTableView.getSelectionModel().getSelectedItem());
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -117,13 +118,14 @@ public class appointmentController implements Initializable {
 
 
     }
-
+//shows the appointments in the upcoming week
     @FXML void onActionWeekSelected(ActionEvent event) throws SQLException {
         Appointment.getAllAppointments().clear();
         DBappointment.getAppointmentByWeek();
 
     }
 
+    //deletes a selected appointment
     @FXML void onActiondDeleteApoointment(ActionEvent event) throws SQLException {
         Appointment selected = appointmentTableView.getSelectionModel().getSelectedItem();
         if (selected == null) { return; }

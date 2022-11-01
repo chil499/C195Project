@@ -105,6 +105,7 @@ public class addCustomerController implements Initializable {
         return newID;
     }
 
+    //sets the country combobox
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

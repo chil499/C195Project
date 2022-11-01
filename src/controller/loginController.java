@@ -41,7 +41,7 @@ public class loginController implements Initializable {
     //login checks if username password correct and sends to appointment screen
     @FXML void onActionLogin(ActionEvent event) throws SQLException, IOException {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("language/Nat");
-        String filename = "log.txt",item;
+        String filename = "login_activity.txt",item;
 
         FileWriter fileWriter = new FileWriter(filename,true);
         PrintWriter outputFile = new PrintWriter(fileWriter);
@@ -71,7 +71,7 @@ public class loginController implements Initializable {
     }
 
 
-
+//sets the text labels based on language
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ZoneId localZoneId = ZoneId.systemDefault();

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 public class DBcontact {
 
+    //add contact objects from db
     public static void addContactObjects() throws SQLException {
         String sql = "SELECT * FROM contacts";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);

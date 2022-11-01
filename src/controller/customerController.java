@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class customerController implements Initializable {
-
+//initalizes table view
     @FXML private TableView<Customer> customerTableView;
     @FXML private TableColumn<Customer, String> customerAddressCol;
     @FXML private TableColumn<Customer, String> customerCountryCol;
@@ -31,10 +31,9 @@ public class customerController implements Initializable {
     @FXML private TableColumn<Customer, String> customerStateCol;
 
 
-@Override
+    //sets all the tableview items
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
 
         customerTableView.setItems(Customer.getAllCustomers());
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -49,7 +48,7 @@ public class customerController implements Initializable {
 
     Stage stage;
     Parent scene;
-
+//sends to add customer screen
     @FXML
     void onActionAddCustomer(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -58,7 +57,7 @@ public class customerController implements Initializable {
         stage.show();
 
     }
-
+//sends to appoinment screen
     @FXML
     void onActionAppointment(ActionEvent event) throws IOException, SQLException {
 
@@ -69,7 +68,7 @@ public class customerController implements Initializable {
         stage.show();
 
     }
-
+//deletes selected customer and all appointments
     @FXML
     void onActionDeleteCustomer(ActionEvent event) throws SQLException {
         Customer selected = customerTableView.getSelectionModel().getSelectedItem();
@@ -87,7 +86,7 @@ public class customerController implements Initializable {
 
         }
     }
-
+//sends to report screen
     @FXML
     void onActionReport(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -95,7 +94,7 @@ public class customerController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
+//sends to update customer screen with selected customer
     @FXML
     void onActionUpdateCustomer(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -103,9 +102,8 @@ public class customerController implements Initializable {
         loader.load();
 
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-
-
         Customer selected = customerTableView.getSelectionModel().getSelectedItem();
+        if (selected == null) { return; }
         updateCustomerController controller = loader.getController();
         controller.setCustomer(customerTableView.getSelectionModel().getSelectedItem());
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();

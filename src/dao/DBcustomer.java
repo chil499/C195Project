@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 public class DBcustomer {
 
+    //returns customer objects
     public static void getCustomerObjects() throws SQLException {
         Customer.getAllCustomers().clear();
         Customer.getAllCustomers();
@@ -30,6 +31,7 @@ public class DBcustomer {
 
 
     }
+    //inserts new customer
     public static void insert(int id,String name, String address, String zip, String phone, Timestamp createDate, String createdBy, Timestamp lastUpdateDate, String lastUpdatedBy, int divisionID) throws SQLException{
          String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?,?,?,?,?,?,?,?,?)";
          PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -47,6 +49,7 @@ public class DBcustomer {
          System.out.print("Insert successful");
 
     }
+    //updates customer
     public static void update(String name, String address, String zip, String phone, Timestamp createDate, String createdBy, Timestamp lastUpdateDate, String lastUpdatedBy, int divisionID,int id) throws SQLException {
         String sql = "UPDATE customers SET Customer_Name = ?,Address = ?, Postal_Code = ?,Phone = ?, Create_Date =?,Created_By = ?,Last_Update = ?,Last_Updated_By = ?,Division_ID = ? WHERE Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -65,6 +68,7 @@ public class DBcustomer {
 
 
     }
+    //deletes customer
     public static void delete(int ID) throws SQLException {
         String sql = "DELETE FROM customers where Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -74,6 +78,7 @@ public class DBcustomer {
 
 
     }
+    //selects customer
     public static String select( String columnName,int ID) throws SQLException {
         String sql = "SELECT * FROM customers WHERE Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -83,6 +88,7 @@ public class DBcustomer {
         String result  = rs.getString(columnName);
         return result;
     }
+    //gets time stamp from customer
     public static Timestamp selectTimestamp( String columnName,int ID) throws SQLException {
         String sql = "SELECT * FROM customers WHERE Customer_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -92,6 +98,7 @@ public class DBcustomer {
         Timestamp result  = rs.getTimestamp(columnName);
         return result;
     }
+    //deletes appointments with customer
     public static void deleteCustomerAppointments(int ID) throws SQLException {
 
         String sql = "DELETE FROM appointments WHERE Customer_ID = ?";

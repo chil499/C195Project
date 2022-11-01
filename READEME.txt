@@ -1,0 +1,11 @@
+Appontment Scheduling Application
+By Connor Hillis 11/1/2022
+IDE: IntelliJ 2021.1.3CE
+Java SE 17.0.1
+JavaFX-SDK-11.0.2
+
+To launch the program, run the main function, you will then be prompted to log in using id, and password
+
+The third report I made, shows the total minutes of appointments by customer
+
+mysql-connector-java-5.49

@@ -27,7 +27,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class updateCustomerController {
-
+//initalize text fields and combobox
     @FXML private TextField addressTextField;
     @FXML private Button cancelButton;
     @FXML private ComboBox<Country> countryComboBox;
@@ -43,12 +43,14 @@ public class updateCustomerController {
     private int customerID;
 
     @FXML
+    //sends back to customer page
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
     }
+    //when country is selected from combo box, pulls up that countrys states in next combobox
     @FXML
     void onActionCountrySelect(ActionEvent event){
         Country selected =  countryComboBox.getSelectionModel().getSelectedItem();
@@ -57,6 +59,7 @@ public class updateCustomerController {
         stateComboBox.setItems(matchedStates);
 
     }
+    //sets the selected customer when updating
     public void setCustomer(Customer selectedCustomer){
 
         customerID = Customer.getAllCustomers().indexOf(selectedCustomer);
@@ -82,6 +85,7 @@ public class updateCustomerController {
         }
 
     }
+    //updates the selected customer with new values
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
         try {

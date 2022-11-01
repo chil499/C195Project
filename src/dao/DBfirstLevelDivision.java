@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBfirstLevelDivision {
-
+//adds state obejcts
     public static void addfirstLevelDivsionObjects() throws SQLException {
         String sql = "SELECT * FROM first_level_divisions";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -22,6 +22,7 @@ public class DBfirstLevelDivision {
     }
 
 
+    //returns state from division id
     public static String returnState(int divisionID) throws SQLException {
         String sql = "SELECT Division FROM first_level_divisions WHERE Division_ID = '" + divisionID + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);

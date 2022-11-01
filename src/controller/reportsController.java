@@ -2,9 +2,7 @@
 package controller;
 
         import dao.DBappointment;
-        import dao.DBcustomer;
         import javafx.collections.FXCollections;
-        import javafx.collections.ObservableArray;
         import javafx.collections.ObservableList;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
@@ -25,6 +23,7 @@ package controller;
         import java.util.ResourceBundle;
 
 public class reportsController implements Initializable {
+    //initalizing all combobox's and tables
     @FXML private ComboBox<Customer> customerComboBox;
     @FXML private ComboBox<Customer> customerMinutesComboBox;
     @FXML private ComboBox<String> monthComboBox;
@@ -46,6 +45,7 @@ public class reportsController implements Initializable {
     Parent scene;
 
     @Override
+    //adding months to combo box and setting up table views
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         //LAMDA EXPRESSION FOR EXITING THE PROGRAM
@@ -90,14 +90,14 @@ public class reportsController implements Initializable {
 
 
     }
-
+//sets the tablebiew to selected users appointments
     @FXML void onActionCustomerReportSelect(ActionEvent event) throws IOException, SQLException {
         DBappointment.getAppointmentByCustomer(customerComboBox.getSelectionModel().getSelectedItem().getID());
         reportTableView.setItems(Appointment.getAllAppointments());
 
 
     }
-
+    //sends to appointment screen
     @FXML void onActionAppointmentSelect(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
@@ -105,6 +105,7 @@ public class reportsController implements Initializable {
         stage.show();
 
     }
+    //sends to customer screen
     @FXML void onActionCustomerSelect(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
@@ -114,12 +115,14 @@ public class reportsController implements Initializable {
     }
 
 
+    //total minutes of appointments from selected customer
     @FXML
     void onActionCustomerHourSelect(ActionEvent event) throws SQLException, ParseException {
            totalMinutesTextField.setText(String.valueOf(DBappointment.getAppointmentByCustomerTimes(customerMinutesComboBox.getSelectionModel().getSelectedItem().getID())));
     }
 
 
+    //gets amount of appointments by type and month
     @FXML
     void onActionRunReport(ActionEvent event) throws SQLException {
         if (monthComboBox.getSelectionModel().getSelectedItem() == null || typeComboBox.getSelectionModel().getSelectedItem() == null) {

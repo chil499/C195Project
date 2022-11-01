@@ -9,6 +9,7 @@ import java.sql.SQLException;
 public class DBuser {
     private static User loggedOnUser;
 
+    //check if valid login
     public static Boolean checkLogin(String userName, String password) throws SQLException {
         String sql = "SELECT * FROM users WHERE User_Name = '" + userName + "' AND Password ='"+ password + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -22,6 +23,7 @@ public class DBuser {
         }
 
     }
+    //returns user
     public static User getLoggedOnUser() {
         return loggedOnUser;
     }
