@@ -6,10 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * getins user information from database
+ */
 public class DBuser {
     private static User loggedOnUser;
 
-    //check if valid login
+    /**check if valid login
+     *
+     * @param userName
+     * @param password
+     * @return
+     * @throws SQLException
+     */
     public static Boolean checkLogin(String userName, String password) throws SQLException {
         String sql = "SELECT * FROM users WHERE User_Name = '" + userName + "' AND Password ='"+ password + "'";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -23,7 +32,11 @@ public class DBuser {
         }
 
     }
-    //returns user
+
+    /**returns user
+     *
+     * @return
+     */
     public static User getLoggedOnUser() {
         return loggedOnUser;
     }

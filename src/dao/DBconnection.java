@@ -3,6 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * connects to the database
+ */
 public abstract class DBconnection {
 
 
@@ -16,7 +19,9 @@ public abstract class DBconnection {
     private static final String password = "Passw0rd!";
     public static Connection connection;
 
-    //connects to database
+    /**connects to database
+     *
+     */
     public static void openConnection(){
         try{
             Class.forName(driver);
@@ -28,7 +33,10 @@ public abstract class DBconnection {
 
         }
     }
-    //closes the connection with the database
+
+    /**closes the connection with the database
+     *
+     */
     public static void closeConnection(){
         try{
             connection.close();

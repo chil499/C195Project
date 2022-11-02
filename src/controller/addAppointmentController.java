@@ -20,10 +20,11 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-
+/**
+ * adds functionality to appointment controll page
+ */
 public class addAppointmentController implements Initializable {
 
-    //initalize text fields
     @FXML private TextField descriptionTextField;
     @FXML private TextField locationTextField;
     @FXML private TextField endDateTextField;
@@ -42,7 +43,9 @@ public class addAppointmentController implements Initializable {
     Parent scene;
 
     @Override
-    //setting all the combo boxes
+    /**setting all the combo boxes
+     *
+     */
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contactComboBox.setItems(Contact.getAllContacts());
         LocalTime start = LocalTime.of(0,0);
@@ -53,7 +56,11 @@ public class addAppointmentController implements Initializable {
         }
     }
 
-    //sends back to appointment page
+    /**sends back to appointment page
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -61,7 +68,12 @@ public class addAppointmentController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    //sets end time on hour ahead of start time
+
+    /**sets end time on hour ahead of start time
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionSelectStart(ActionEvent event) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -70,14 +82,23 @@ public class addAppointmentController implements Initializable {
         endTimeTextField.setText(startTime);
     }
 
-    //sets end date to same day as start date
+    /**sets end date to same day as start date
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionSelectDate(ActionEvent event) throws IOException{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         endDateTextField.setText(startDatePicker.getValue().format(formatter));
     }
 
-    //saves the appointment and sends back to appointment screen
+    /**saves the appointment and sends back to appointment screen
+     *
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     */
     @FXML
     void onActionSave(ActionEvent event) throws IOException, SQLException {
     try {

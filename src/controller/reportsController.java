@@ -22,8 +22,11 @@ package controller;
         import java.time.LocalDateTime;
         import java.util.ResourceBundle;
 
+/**
+ * adds functionality to reports page
+ */
 public class reportsController implements Initializable {
-    //initalizing all combobox's and tables
+
     @FXML private ComboBox<Customer> customerComboBox;
     @FXML private ComboBox<Customer> customerMinutesComboBox;
     @FXML private ComboBox<String> monthComboBox;
@@ -45,10 +48,15 @@ public class reportsController implements Initializable {
     Parent scene;
 
     @Override
-    //adding months to combo box and setting up table views
+    /**adding months to combo box and setting up table views
+     *
+     */
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        //LAMDA EXPRESSION FOR EXITING THE PROGRAM
+        /**LAMDA EXPRESSION FOR EXITING THE PROGRAM
+         * I'm using this lambda expression to exit the program
+         * instead of creating a normal method I can use one line of code to exit the application when the button is clicked
+         */
         exitButton.setOnAction(e ->System.exit(0));
 
         ObservableList<String> months = FXCollections.observableArrayList();
@@ -90,14 +98,25 @@ public class reportsController implements Initializable {
 
 
     }
-//sets the tablebiew to selected users appointments
+
+    /**sets the tablebiew to selected users appointments
+     *
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     */
     @FXML void onActionCustomerReportSelect(ActionEvent event) throws IOException, SQLException {
         DBappointment.getAppointmentByCustomer(customerComboBox.getSelectionModel().getSelectedItem().getID());
         reportTableView.setItems(Appointment.getAllAppointments());
 
 
     }
-    //sends to appointment screen
+
+    /**sends to appointment screen
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML void onActionAppointmentSelect(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
@@ -105,7 +124,12 @@ public class reportsController implements Initializable {
         stage.show();
 
     }
-    //sends to customer screen
+
+    /**sends to customer screen
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML void onActionCustomerSelect(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
@@ -115,14 +139,23 @@ public class reportsController implements Initializable {
     }
 
 
-    //total minutes of appointments from selected customer
+    /**total minutes of appointments from selected customer
+     *
+     * @param event
+     * @throws SQLException
+     * @throws ParseException
+     */
     @FXML
     void onActionCustomerHourSelect(ActionEvent event) throws SQLException, ParseException {
            totalMinutesTextField.setText(String.valueOf(DBappointment.getAppointmentByCustomerTimes(customerMinutesComboBox.getSelectionModel().getSelectedItem().getID())));
     }
 
 
-    //gets amount of appointments by type and month
+    /**gets amount of appointments by type and month
+     *
+     * @param event
+     * @throws SQLException
+     */
     @FXML
     void onActionRunReport(ActionEvent event) throws SQLException {
         if (monthComboBox.getSelectionModel().getSelectedItem() == null || typeComboBox.getSelectionModel().getSelectedItem() == null) {

@@ -7,9 +7,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Connects to database to get contact information
+ */
 public class DBcontact {
 
-    //add contact objects from db
+    /**add contact objects from db
+     *
+     * @throws SQLException
+     */
     public static void addContactObjects() throws SQLException {
         String sql = "SELECT * FROM contacts";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);

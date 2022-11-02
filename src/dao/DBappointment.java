@@ -16,11 +16,17 @@ interface createInfo{
     String info(int x, String y);
 }
 
+/**
+ * Connects to database to get appointments
+ */
 public class DBappointment {
     private static ZoneId localZone = ZoneId.systemDefault();
     private static int appointmentCount =0;
 
-    //returns appointment that month
+    /**returns appointment that month
+     *
+     * @throws SQLException
+     */
     public static void getAppointmentByMonth() throws SQLException {
         Appointment.getAllAppointments().clear();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -55,7 +61,13 @@ public class DBappointment {
             int contactID = rs.getInt("Contact_ID");
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
         }
-    }public static void getAppointmentAll() throws SQLException {
+    }
+
+    /**gets all appointments
+     *
+     * @throws SQLException
+     */
+    public static void getAppointmentAll() throws SQLException {
         Appointment.getAllAppointments().clear();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -92,7 +104,10 @@ public class DBappointment {
         }
     }
 
-    //returns appointments this week
+    /**returns appointments this week
+     *
+     * @throws SQLException
+     */
     public static void getAppointmentByWeek() throws SQLException {
         Appointment.getAllAppointments().clear();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -123,7 +138,12 @@ public class DBappointment {
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
         }
     }
-    //returns customers appointments
+
+    /**returns appointments by customer
+     *
+     * @param customerID
+     * @throws SQLException
+     */
     public static void getAppointmentByCustomer(int customerID) throws SQLException {
         Appointment.getAllAppointments().clear();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -152,7 +172,14 @@ public class DBappointment {
             Appointment.addAppointment(new Appointment(id, title, description, location, type, start, end, customerID, userID, contactID));
         }
     }
-    //returns customer appointment times
+
+    /**returns customer appointment times
+     *
+     * @param customerID
+     * @return
+     * @throws SQLException
+     * @throws ParseException
+     */
     public static long getAppointmentByCustomerTimes(int customerID) throws SQLException, ParseException {
         Appointment.getAllAppointments().clear();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -174,7 +201,11 @@ public class DBappointment {
         return totalMinutes;
 
     }
-    //returns appintments starting soon
+
+    /**returns appintments starting soon
+     *
+     * @throws SQLException
+     */
     public static void getAppointmentSoon() throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -200,10 +231,12 @@ public class DBappointment {
             ZonedDateTime zdtStart = odtStart.atZoneSameInstant(localZone);
             startDB = zdtStart.format(formatter);
 
-            //LAMDA FUNCTION TO RETURN APPOINTMENT INFORMATION
-            createInfo info = (x, y) -> {
-                return new String("You have appointment '" + x + "' starting at: " + y);
-            };
+            /**LAMDA FUNCTION TO RETURN APPOINTMENT INFORMATION
+             * I'm using this lamda function to combine and  insert the appointment id and start time
+             * into the the one information string.
+             * The String is used to display if there are any upcoming appointments
+             */
+            createInfo info = (x, y) -> { return new String("You have appointment '" + x + "' starting at: " + y); };
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION, info.info(id, startDB));
             alert.show();
@@ -214,7 +247,14 @@ public class DBappointment {
             alert.show();
             }
     }
-    //returns appointments by type and month
+
+    /**returns appointments by type and month
+     *
+     * @param month
+     * @param type
+     * @return
+     * @throws SQLException
+     */
     public static int getAppointmentTypeMonth(String month, String type) throws SQLException {
         int appointments = 0;
         String sql = "SELECT * FROM appointments where Type = '" + type + "' AND monthname(Start) = '"+month+"'";
@@ -227,7 +267,23 @@ public class DBappointment {
 
     }
 
-    //insert into db
+    /**insert into db
+     *
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param start
+     * @param end
+     * @param createDate
+     * @param createdBy
+     * @param lastUpdateDate
+     * @param lastUpdatedBy
+     * @param customerID
+     * @param userID
+     * @param contactID
+     * @throws SQLException
+     */
     public static void insert(String title, String description, String location, String type, Timestamp start, Timestamp end, Timestamp createDate, String createdBy, Timestamp lastUpdateDate,String lastUpdatedBy,int customerID,int userID, int contactID) throws SQLException{
         String sql = "INSERT INTO appointments (Title, Description,Location,Type,Start,End,Create_Date,Created_By,Last_Update,Last_Updated_By,Customer_ID, User_ID,Contact_ID)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -248,7 +304,25 @@ public class DBappointment {
         System.out.print("Insert successful");
 
     }
-    //update the db
+
+    /**update the db
+     *
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param start
+     * @param end
+     * @param createDate
+     * @param createdBy
+     * @param lastUpdateDate
+     * @param lastUpdatedBy
+     * @param customerID
+     * @param userID
+     * @param contactID
+     * @param id
+     * @throws SQLException
+     */
     public static void update(String title, String description, String location, String type, Timestamp start,Timestamp end, Timestamp createDate,String createdBy, Timestamp lastUpdateDate,String lastUpdatedBy,int customerID, int userID, int contactID,int id) throws SQLException {
         String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Create_Date = ?,Created_By = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID=? WHERE Appointment_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -270,7 +344,13 @@ public class DBappointment {
 
 
     }
-    //checks if appointment is in est busiunes hours
+
+    /**checks if appointment is in est busiunes hours
+     *
+     * @param start
+     * @param localZone
+     * @return
+     */
     public static Boolean checkBusinessHour(String start,String localZone){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         ZonedDateTime startZoned = ZonedDateTime.of((LocalDateTime.parse(start,formatter)),ZoneId.of(localZone));
@@ -295,7 +375,12 @@ public class DBappointment {
         return false;
     }
 
-    //checks if there is a time over lap with appointmentws
+    /**checks if there is a time over lap with appointmentws
+     *
+     * @param start
+     * @return
+     * @throws SQLException
+     */
     public static Boolean checkOverLap(String start) throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime checkStart = LocalDateTime.parse(start,formatter).atOffset( ZoneOffset.UTC).toLocalDateTime();
@@ -324,7 +409,13 @@ public class DBappointment {
        return false;
 
     }
-    //checks if there is a time overlap with appoinmtnets
+
+    /**checks if there is a time overlap with appoinmtnets
+     *
+     * @param start
+     * @return
+     * @throws SQLException
+     */
     public static Boolean checkOverLapUpdate(String start) throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime checkStart = LocalDateTime.parse(start,formatter).atOffset( ZoneOffset.UTC).toLocalDateTime();
@@ -354,7 +445,11 @@ public class DBappointment {
 
     }
 
-    //deletes appoiintment from db
+    /**deletes appoiintment from db
+     *
+     * @param ID
+     * @throws SQLException
+     */
     public static void delete(int ID) throws SQLException {
         String sql = "DELETE FROM appointments where appointment_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -362,7 +457,13 @@ public class DBappointment {
         ps.executeUpdate();
     }
 
-    //selects specific appointments
+    /**selects specific appointments
+     *
+     * @param columnName
+     * @param ID
+     * @return
+     * @throws SQLException
+     */
     public static String select( String columnName,int ID) throws SQLException {
         String sql = "SELECT * FROM appointments WHERE Appointment_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);
@@ -372,7 +473,12 @@ public class DBappointment {
         String result  = rs.getString(columnName);
         return result;
     }
-    //select unqiue types from appointments
+
+    /**select unqiue types from appointments
+     *
+     * @return
+     * @throws SQLException
+     */
     public static ObservableList<String> selectType() throws SQLException {
         ObservableList<String> typeList = FXCollections.observableArrayList();
         String sql = "SELECT Distinct(Type) FROM appointments";
@@ -386,7 +492,13 @@ public class DBappointment {
         return typeList;
     }
 
-    //gets timestamp from appoinment
+    /**gets timestamp from appoinment
+     *
+     * @param columnName
+     * @param ID
+     * @return
+     * @throws SQLException
+     */
     public static Timestamp selectTimestamp( String columnName,int ID) throws SQLException {
         String sql = "SELECT * FROM appointments WHERE Appointment_ID = ?";
         PreparedStatement ps = DBconnection.connection.prepareStatement(sql);

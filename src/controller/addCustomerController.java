@@ -29,6 +29,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import static model.Customer.getAllCustomers;
 
+/**
+ * adds functionality to the add customer page
+ */
 public class addCustomerController implements Initializable {
 
     //initalize textfelds and combo boxes
@@ -43,7 +46,11 @@ public class addCustomerController implements Initializable {
     Parent scene;
     ObservableList<FirstLevelDivision> states = FXCollections.observableArrayList();
 
-    //sends back to customer page
+    /**sends back to customer page
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -52,7 +59,12 @@ public class addCustomerController implements Initializable {
         stage.show();
     }
 
-    //savces customer and sends back to customer page
+    /**savces customer and sends back to customer page
+     *
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
         try {
@@ -88,7 +100,10 @@ public class addCustomerController implements Initializable {
         }
     }
 
-    //when country is selected, sets the state combo box to that countries states
+    /**when country is selected, sets the state combo box to that countries states\
+     *
+     * @param event
+     */
     @FXML
     void onActionCountrySelect(ActionEvent event){
         Country selected =  countryComboBox.getSelectionModel().getSelectedItem();
@@ -105,7 +120,11 @@ public class addCustomerController implements Initializable {
         return newID;
     }
 
-    //sets the country combobox
+    /**sets the country combobox
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

@@ -23,6 +23,9 @@ import java.time.ZoneId;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * adds functinality to login page
+ */
 public class loginController implements Initializable {
 
     @FXML private Label languageLabel;
@@ -38,7 +41,12 @@ public class loginController implements Initializable {
     Parent scene;
 
 
-    //login checks if username password correct and sends to appointment screen
+    /**login checks if username password correct and sends to appointment screen
+     *
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML void onActionLogin(ActionEvent event) throws SQLException, IOException {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("language/Nat");
         String filename = "login_activity.txt",item;
@@ -71,7 +79,11 @@ public class loginController implements Initializable {
     }
 
 
-//sets the text labels based on language
+    /**sets the text labels based on language
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ZoneId localZoneId = ZoneId.systemDefault();

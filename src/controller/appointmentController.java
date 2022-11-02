@@ -23,9 +23,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * adds functionality to appointment page
+ */
 public class appointmentController implements Initializable {
 
-//initializes all the tables
+
     @FXML private TableView<Appointment> appointmentTableView;
     @FXML private TableColumn<Appointment, Integer> appointmentIDCol;
     @FXML private TableColumn<Appointment, String> titleCol;
@@ -41,9 +44,12 @@ public class appointmentController implements Initializable {
 
     Stage stage;
     Parent scene;
-
+    /**
+     * sets values to all the tables
+     * @param url
+     * @param resourceBundle
+      */
     @Override
-    //sets values to all the tables
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             DBappointment.getAppointmentByMonth();
@@ -63,7 +69,11 @@ public class appointmentController implements Initializable {
         contactIDCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
 
     }
-    //sends to add appointment screen
+    /**
+     * sends to add appointment screen
+     * @param event
+     *
+     */
     @FXML void onActionAddApointment(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/addAppointment.fxml"));
@@ -71,7 +81,10 @@ public class appointmentController implements Initializable {
         stage.show();
 
     }
-//sends to customer screen
+    /**
+     * sends to customer screen
+     * @param event
+     * */
     @FXML void onActionCustomer(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer.fxml"));
@@ -80,7 +93,9 @@ public class appointmentController implements Initializable {
 
 
     }
-//shows reports my month
+    /**
+    * shows reports my month
+     */
     @FXML void onActionMonthSelected(ActionEvent event) throws SQLException {
         Appointment.getAllAppointments().clear();
         DBappointment.getAppointmentByMonth();
@@ -91,14 +106,21 @@ public class appointmentController implements Initializable {
         DBappointment.getAppointmentAll();
     }
 
-    //sensds to report screen
+    /**
+     * sends to report screen
+     * @param event
+     */
     @FXML void onActionReport(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    //selects appointment and loads the update page
+    //
+    /**
+     * selects appointment and loads the update page
+     * @param event
+     */
     @FXML void onActionUpdateAppointment(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/view/updateAppointment.fxml"));
@@ -118,21 +140,30 @@ public class appointmentController implements Initializable {
 
 
     }
-//shows the appointments in the upcoming week
+
+    /**
+     * shows the appointments in the upcoming week
+     * @param event
+     */
     @FXML void onActionWeekSelected(ActionEvent event) throws SQLException {
         Appointment.getAllAppointments().clear();
         DBappointment.getAppointmentByWeek();
 
     }
 
-    //deletes a selected appointment
+
+    /**
+     * deletes a selected appointment
+     * @param event
+     */
     @FXML void onActiondDeleteApoointment(ActionEvent event) throws SQLException {
         Appointment selected = appointmentTableView.getSelectionModel().getSelectedItem();
         if (selected == null) { return; }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"This will delete the Appointment from the database, do you wish to continue?");
         Optional<ButtonType> result = alert.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK){
-
+            Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"The appointment with ID:"+ selected.getId() + " and type:" + selected.getType() + " has been deleted");
+            alert2.show();
             appointmentTableView.getItems().remove(selected);
             DBappointment.delete(selected.getId());
         }

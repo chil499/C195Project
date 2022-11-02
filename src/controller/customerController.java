@@ -19,8 +19,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * adds functionality to customer page
+ */
 public class customerController implements Initializable {
-//initalizes table view
+
     @FXML private TableView<Customer> customerTableView;
     @FXML private TableColumn<Customer, String> customerAddressCol;
     @FXML private TableColumn<Customer, String> customerCountryCol;
@@ -31,7 +34,11 @@ public class customerController implements Initializable {
     @FXML private TableColumn<Customer, String> customerStateCol;
 
 
-    //sets all the tableview items
+    /**sets all the tableview items
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -48,7 +55,12 @@ public class customerController implements Initializable {
 
     Stage stage;
     Parent scene;
-//sends to add customer screen
+
+    /**sends to add customer screen
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionAddCustomer(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -57,7 +69,13 @@ public class customerController implements Initializable {
         stage.show();
 
     }
-//sends to appoinment screen
+
+    /**sends to appoinment screen
+     *
+     * @param event
+     * @throws IOException
+     * @throws SQLException
+     */
     @FXML
     void onActionAppointment(ActionEvent event) throws IOException, SQLException {
 
@@ -68,7 +86,12 @@ public class customerController implements Initializable {
         stage.show();
 
     }
-//deletes selected customer and all appointments
+
+    /**deletes selected customer and all appointments
+     *
+     * @param event
+     * @throws SQLException
+     */
     @FXML
     void onActionDeleteCustomer(ActionEvent event) throws SQLException {
         Customer selected = customerTableView.getSelectionModel().getSelectedItem();
@@ -86,7 +109,12 @@ public class customerController implements Initializable {
 
         }
     }
-//sends to report screen
+
+    /**sends to report screen
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionReport(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
@@ -94,7 +122,12 @@ public class customerController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-//sends to update customer screen with selected customer
+
+    /**sends to update customer screen with selected customer
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();

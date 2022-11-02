@@ -25,7 +25,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-//initalizes text fields and date pickers and combo box
+/**
+ * adds functionality to the update appointment page
+ */
 public class updateAppointmentController implements Initializable {
     @FXML
     private TextField appointmentIDTextField;
@@ -68,7 +70,9 @@ public class updateAppointmentController implements Initializable {
     Parent scene;
 
     @FXML
-    //sends to appointment page
+    /**sends to appointment page
+     *
+     */
     void onActionCancel(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment.fxml"));
@@ -76,7 +80,10 @@ public class updateAppointmentController implements Initializable {
         stage.show();
     }
 
-    //selects start time from combobox, makes end time one hour ahead
+    /**selects start time from combobox, makes end time one hour ahead
+     *
+     * @param event
+     */
     @FXML
     void onActionSelectStart(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -85,14 +92,22 @@ public class updateAppointmentController implements Initializable {
         endTimeTextField.setText(startTime);
     }
 
-    //selects start date from date picker, makes end date the same date
+    /**selects start date from date picker, makes end date the same date
+     *
+     * @param event
+     */
     @FXML
     void onActionSelectDate(ActionEvent event) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         endDateTextField.setText(startDatePicker.getValue().format(formatter));
     }
 
-    //updates the appointment checking for overlaps
+    /**updates the appointment checking for overlaps
+     *
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     void onActionSave(ActionEvent event) throws SQLException, IOException {
         try {
@@ -145,7 +160,11 @@ public class updateAppointmentController implements Initializable {
 
 
     }
-    //sets the appointment when one is selected to be updated
+
+    /**sets the appointment when one is selected to be updated
+     *
+     * @param selectedAppointment
+     */
     public void setAppointment(Appointment selectedAppointment){
         DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm");
